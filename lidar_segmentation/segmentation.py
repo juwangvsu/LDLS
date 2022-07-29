@@ -386,6 +386,7 @@ class LidarSegmentation(object):
 
         """
         n_points = lidar.shape[0]
+        print('lidar.shape: ', lidar.shape, type(lidar))
         n_pixels = n_rows * n_cols
         # Step 1: Create KNN graph of lidar points only
         distances, neighbors = self.point_nearest_neighbors(lidar)
@@ -403,7 +404,7 @@ class LidarSegmentation(object):
 
         # CUDA config
         blocks = 30
-        threads = 256
+        threads = 128#256
 
         # outputs for point-to-pixel connections
         pp_rows_out = cp.full((n_points, self.pixel_to_lidar_kernel_size ** 2),
