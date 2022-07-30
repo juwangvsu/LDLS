@@ -1,24 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[11]:
-
-
-#get_ipython().run_line_magic('load_ext', 'autoreload')
-#get_ipython().run_line_magic('autoreload', '2')
-
-
-# # LDLS Demo
-# 
-# This notebook demonstrates how to use LDLS to perform instance segmentation of a LiDAR point cloud. This demo uses Frame 571 from the KITTI object detection dataset.
-
-# ## Setup
-# 
-# Import LiDAR segmentation modules:
-
-# In[10]:
-
-
 import numpy as np
 from pathlib import Path
 import skimage
@@ -37,14 +17,14 @@ from mask_rcnn.mask_rcnn import MaskRCNNDetector
 # - Image
 # - LiDAR point cloud
 
-# In[12]:
-
-
 # Define file paths
-calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
-image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
-lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
+#calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
+#image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
+#lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
 
+calib_path = Path("data/") / "training" / "calib" / "000007.txt"
+image_path = Path("data/") / "training" / "image_2" / "000007.png"
+lidar_path = Path("data/") / "training" / "velodyne" / "000007.bin"
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
 
@@ -67,7 +47,7 @@ print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 detector = MaskRCNNDetector()
 detections = detector.detect(image)
 print('\n\n\n******** detection done****************\n\n\n')
-#detections.visualize(image)
+detections.visualize(image)
 
 print('\n\n\n******** visualize done****************\n\n\n')
 # # Perform LiDAR segmentation
@@ -125,69 +105,17 @@ results_all = lidarseg.run(lidar, detections, max_iters=50, save_all=True)
 plot_diffusion(results_all)
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-results.points.shape
-
-
-# In[ ]:
-
-
-numpy.array
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
 
 results.class_labels()
 
-
-# In[ ]:
 
 
 results.instance_labels()
 
 
-# In[ ]:
-
-
 detections.class_ids
 
 
-# In[ ]:
-
-
-import test_plot
-
-
-# In[ ]:
-
-
-import plotly.express as px
-fig = px.bar(x=["a", "b", "c"], y=[1, 3, 2])
-fig.show()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
