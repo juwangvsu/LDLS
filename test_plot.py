@@ -1,4 +1,5 @@
-import plotly.plotly as ply
+#import plotly.plotly as ply
+import chart_studio.plotly as ply
 from plotly.offline import iplot
 import plotly.graph_objs as go
 import numpy as np
