@@ -413,6 +413,7 @@ class LidarSegmentation(object):
                               -1, dtype=int)
         pp_d_out = cp.full((n_points, self.pixel_to_lidar_kernel_size ** 2),
                            -1, dtype=cp.float32)
+        #print('data types: lidar, projected, pp_d_out, ', type(lidar), type(projected), type(pp_d_out), lidar.shape, projected.shape, pp_d_out.shape)
 
         connect_lidar_to_pixels[blocks, threads](lidar, projected,
                                                  pixel_indices_matrix,
@@ -433,6 +434,7 @@ class LidarSegmentation(object):
         d = np.concatenate([d, pp_d])
 
         # Row-normalize
+        print(type(row_indices), type(d), type(n_points))
         d = row_normalize(row_indices, d, n_points)
 
         # Set bottom right quadrant to identity

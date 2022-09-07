@@ -18,13 +18,13 @@ from mask_rcnn.mask_rcnn import MaskRCNNDetector
 # - LiDAR point cloud
 
 # Define file paths
-#calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
-#image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
-#lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
+calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
+image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
+lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
 
-calib_path = Path("data/") / "training" / "calib" / "000007.txt"
-image_path = Path("data/") / "training" / "image_2" / "000007.png"
-lidar_path = Path("data/") / "training" / "velodyne" / "000007.bin"
+#calib_path = Path("data/") / "training" / "calib" / "000042.txt"
+#image_path = Path("data/") / "training" / "image_2" / "000042.png"
+#lidar_path = Path("data/") / "training" / "velodyne" / "000042.bin"
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
 
