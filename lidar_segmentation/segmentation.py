@@ -510,6 +510,10 @@ class LidarSegmentation(object):
 
     def run(self, lidar, detections, max_iters=200, device=0, save_all=True):
         with cp.cuda.Device(device):
+            mempool = cp.get_default_memory_pool()
+            print('used gpu mem: ', mempool.used_bytes())
+            print('tt ', mempool.total_bytes())
+            #mempool.free_all_blocks() #this cause some trouble...
             start_time = time.time()
             # Project lidar into 2D
             projected = self.project_points(lidar)
@@ -538,12 +542,17 @@ class LidarSegmentation(object):
 
             # Move labels to device
             Y_gpu = cp.array(labels)
-
+            print('Y_gpu used gpu mem: ', mempool.used_bytes())
+            print('tt ', mempool.total_bytes())
+            input('hit enter to continue...')
             # Create graph on GPU
             # This is a (n_lidar_points + n_pixels) by (n_lidar_points + n_pixels) matrix
             G_gpu = self.create_graph(lidar, projected[in_view, :],
                                       n_rows=detections.masks.shape[0],
                                       n_cols=detections.masks.shape[1])
+            print('after graph used gpu mem: ', mempool.used_bytes())
+            print('tt ', mempool.total_bytes())
+            input('hit enter to continue...')
 
             if save_all:
                 all_label_likelihoods = np.empty(
@@ -579,7 +588,8 @@ class LidarSegmentation(object):
                     all_label_likelihoods[-1, :, :] = self.remove_outliers(
                         all_label_likelihoods[-1, :, :], G_gpu)
 
-
+        print('run finish used gpu mem: ', mempool.used_bytes())
+        print('tt ', mempool.total_bytes())
         return LidarSegmentationResult(points=lidar, projected=projected,
                                        in_camera_view=in_view,
                                        label_likelihoods=all_label_likelihoods,

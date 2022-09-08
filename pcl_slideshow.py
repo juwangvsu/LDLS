@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-#  usage: python pcl_slideshow.py demo1|demo2|demo3 [fnprefix]|demo5 "pheonix-data/pcdfiles/*.pcd"|
+#  usage: python pcl_slideshow.py demo1|demo2|demo3 [fnprefix]|demo5 "phoenix-data/pcdfiles/*.pcd"|
 # pyenv shell mini... (removed rospy stuff so works with python3)
 # demo1: show all scan*pcd, demo2 show all submap*.pcd
 # demo3: show all pcd file with exact name as prefix_###.pcd
 # if blank screen, mouse middle wheel to zoom out 
+# run under ldls
 
 # orig: cartographer/pcl_slideshow.py,
 # run under ~/Docments/cartographer, pyenv shell 2.7.17
@@ -278,9 +279,9 @@ if __name__ == "__main__":
   if arglen>1:
       cmd = sys.argv[1]
   print("limited func from pcl-python visualization ...")
-  print(" usage: python pcl_slideshow.py demo1|demo2|demo3 [fnprefix]")
+  print(" usage: python pcl_slideshow.py demo1|demo2|demo3|demo5 [fnprefix] \"phoenix-data\"/pcdfiles/*.pcd ")
   print(" demo3: show all pcd file with exact name as prefix_###.pcd")
-  print(" run under ~/Docments/cartographer, pyenv shell 2.7.17")
+  print(" run under ldls")
   if cmd=="demo1":
       print("demo1, show submap clouds")
       for i in range(len(pcdfilelist)):

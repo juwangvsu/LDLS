@@ -2,6 +2,16 @@
 	arldell
 	newamdpc
 
+--------------------9/7/2022 gpu memory usage and release ----
+maskrcnn use 3gb of gpu memory.
+lidar segmentation use cupy, which use 300mb gpu memory
+cupy gpu management can not free maskrcnn gpu, which is 
+tensorflow.
+To release tf gpu memory, use numba: (see demo.py)
+	from numba import cuda
+	device = cuda.get_current_device()
+	device.reset()
+
 ----------------------8/18/22 python-pcl ----------------
 using python-pcl to visualize the result:
 	python-pcl install using the whl build from source
@@ -193,7 +203,7 @@ carla changes:
 
 arldell gpu memory not enough if chrome or other gpu program running.
 
-numpy if upgrade to 1.21+ might break numba. use 16.3
+numpy if upgrade to 1.21+ might break numba. use 16.3 or 17.3 if open3d requires
   error: expected dtype object, got 'numpy.dtype
   this error is possibly due to an incompatibility between your numpy and numba versions. 
 
@@ -205,3 +215,7 @@ catastrophic error: cannot open source file "cuda_fp16.h"
 plotly error:
 	pip install chart-studio
 	conda install -c https://conda.anaconda.org/plotly plotly
+
+--------additional pkgs installed --------------------
+open3d 0.15.2
+

@@ -43,49 +43,41 @@ print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 
 # In[1]:
 
-
+import cupy as cp
 detector = MaskRCNNDetector()
 detections = detector.detect(image)
 print('\n\n\n******** detection done****************\n\n\n')
 detections.visualize(image)
+
+print('\n\n\n******** maskrcnn gpu released ****************\n\n\n')
+from numba import cuda
+device = cuda.get_current_device()
+device.reset()
 
 print('\n\n\n******** visualize done****************\n\n\n')
 # # Perform LiDAR segmentation
 # 
 # Next, perform 3D segmentation using a LidarSegmentation object. The LidarSegmentation.run() method takes as inputs a LiDAR point cloud, Mask-RCNN detections, and a maximum number of iterations parameter.
 
-# In[ ]:
-
-
 lidarseg = LidarSegmentation(projection)
 # Be sure to set save_all=False when running segmentation
 # If set to true, returns label diffusion results at each iteration in the results
 # This is useful for analysis or visualizing the diffusion, but slow.
+
 results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
 
 print('\n\n\n******** lidarseg.run done****************\n\n\n')
-
-# In[ ]:
 
 
 #get_ipython().run_line_magic('timeit', 'lidarseg.run(lidar, detections, max_iters=50, save_all=False)')
 
 
-# # Visualize results using Plotly
-# 
 # Plot the resulting labeled pointcloud using [Plotly](https://plot.ly/). You can visualize the results with points colored according to class labels (Person, Car, ...), or instance labels (Person 1, Person 2, Car 1, ...).
-
-# In[ ]:
-
 
 from lidar_segmentation.plotting import plot_segmentation_result
 
 # Show points colored by class label
 plot_segmentation_result(results, label_type='class')
-
-
-# In[ ]:
-
 
 # Show points colored by instance label
 plot_segmentation_result(results, label_type='instance')
@@ -96,22 +88,14 @@ print('\n\n\n******** plot_segmentation_result done****************\n\n\n')
 # 
 # Run the following code block to visualize this. You can use the slide bar on the bottom to see results at different iterations.
 
-# In[ ]:
-
-
 from lidar_segmentation.plotting import plot_diffusion
 
 results_all = lidarseg.run(lidar, detections, max_iters=50, save_all=True)
 plot_diffusion(results_all)
 
-
-
 results.class_labels()
 
-
-
 results.instance_labels()
-
 
 detections.class_ids
 
