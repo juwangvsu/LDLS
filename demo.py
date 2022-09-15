@@ -18,20 +18,22 @@ from mask_rcnn.mask_rcnn import MaskRCNNDetector
 # - LiDAR point cloud
 
 # Define file paths
-calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
-image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
-lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
+#calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
+#image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
+#lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
 
-#calib_path = Path("data/") / "training" / "calib" / "000042.txt"
-#image_path = Path("data/") / "training" / "image_2" / "000042.png"
-#lidar_path = Path("data/") / "training" / "velodyne" / "000042.bin"
+calib_path = Path("data/") / "_out" / "calib" / "00000262.txt"
+image_path = Path("data/") / "_out" / "image_2" / "00000262.png"
+lidar_path = Path("data/") / "_out" / "velodyne" / "00000262.bin"
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
 
 # Load image
 image = load_image(image_path)
+image=image[:,:,:3]
 skimage.io.imshow(image)
-
+print(type(image), image.shape)
+input('pause')
 # Load lidar
 lidar = load_kitti_lidar_data(lidar_path, load_reflectance=False)
 print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
