@@ -154,7 +154,10 @@ carla changes:
 		conda deactivate
 		conda env update --file environment.yml
 		conda activate ldls
-		pip install scikit-image
+		pip install open3d scikit-image
+	        pip install chart-studio
+	        conda install -c https://conda.anaconda.org/plotly plotly
+
 		ipython kernel install --user --name=LDLS
 		jupyter-lab # this will load jupyter webpage to run ipynb
 			plotly not working to show points
@@ -216,6 +219,14 @@ plotly error:
 	pip install chart-studio
 	conda install -c https://conda.anaconda.org/plotly plotly
 
+$PYTHONPATH: cv2 error
+	should not contain /usr/local/lib/python2.7.../ 
+	this might cause cv2 error. the opencv-python contain opencv binary
+	4.1.x but the /usr/local/lib/python2.7 might contain the opencv 3.2.0
+	somehow the cv2 might try to load the wrong one if there is an 
+	3.2.0 cv2.so at /usr/local/lib...
+	
+
 --------additional pkgs installed --------------------
 open3d 0.15.2
-
+ 
