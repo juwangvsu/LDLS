@@ -2,6 +2,34 @@
 	arldell
 	newamdpc
 
+--------------- 11/21/22 venkat/brain ldls docker image ----------------------
+~/Documents/venk/ldls_docker_bag/
+	ldls.docker.image
+	run_docker.sh
+	...bag
+Test steps:
+	docker load --input ldls.docker.image
+		require > 50gb to load the image, after loading it use about 30gb
+	@docker:
+	 	conda activate LDLS
+		python demo.py
+
+the ldls code in the docker image use hybrid mask_rcnn, improving the speed
+
+Status:
+	docker image runs ok, but torch not finding cuda() device. see testcuda.py output
+
+--------------- run ldls in docker ----------------------
+clone ldls, install pyenv, conda, ldls, and various package
+firefox to run jupyter-lab, since plotly need jupyter,
+jupyter looking for a brower, so install firefox
+then firefox need to be run as non-root,
+so adduser robot in docker, @host xhost +si:localuser:robot
+also add a robot user at host for xhost to work
+now I can in docker: su -l robot; export DISPLAY=:0; firefox
+
+now I need robot user in docker to access pyenv, ldls code.
+
 --------------------9/7/2022 gpu memory usage and release ----
 maskrcnn use 3gb of gpu memory.
 lidar segmentation use cupy, which use 300mb gpu memory
@@ -156,6 +184,7 @@ carla changes:
 		conda activate ldls
 		pip install open3d scikit-image
 	        pip install chart-studio
+		conda install -c conda-forge jupyterlab
 	        conda install -c https://conda.anaconda.org/plotly plotly
 
 		ipython kernel install --user --name=LDLS
