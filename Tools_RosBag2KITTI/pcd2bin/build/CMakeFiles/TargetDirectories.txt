@@ -1,0 +1,3 @@
+/media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles/rebuild_cache.dir
+/media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles/pcd2bin.dir
+/media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles/edit_cache.dir
