@@ -85,8 +85,8 @@ void sort_filelists(std::vector<std::string>& filists,std::string type)
 int main(int argc, char **argv)
 {
     //Set the file path
-    std::string bin_path = "/home/cecilia/leo_projects/bishe2019/pcd2bin/bin/";
-    std::string pcd_path = "/home/cecilia/leo_projects/bishe2019/pcd2bin/pcd/";
+    std::string bin_path = "bin/";
+    std::string pcd_path = "pcd/";
     //Read file lists of specific type
     read_filelists( pcd_path, file_lists, "pcd" );
     sort_filelists( file_lists, "pcd" );

@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin
+CMAKE_SOURCE_DIR = /home/student/Documents/venk/LDLS/Tools_RosBag2KITTI/pcd2bin
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build
+CMAKE_BINARY_DIR = /home/student/Documents/venk/LDLS/Tools_RosBag2KITTI/pcd2bin/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/pcd2bin.dir
@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build
 CMakeFiles/pcd2bin.dir/all:
 	$(MAKE) -f CMakeFiles/pcd2bin.dir/build.make CMakeFiles/pcd2bin.dir/depend
 	$(MAKE) -f CMakeFiles/pcd2bin.dir/build.make CMakeFiles/pcd2bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles --progress-num=1,2 "Built target pcd2bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/student/Documents/venk/LDLS/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles --progress-num=1,2 "Built target pcd2bin"
 .PHONY : CMakeFiles/pcd2bin.dir/all
 
 # Include target in all.
@@ -76,9 +76,9 @@ all: CMakeFiles/pcd2bin.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pcd2bin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/venk/LDLS/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pcd2bin.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/student/data_4tb2/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/student/Documents/venk/LDLS/Tools_RosBag2KITTI/pcd2bin/build/CMakeFiles 0
 .PHONY : CMakeFiles/pcd2bin.dir/rule
 
 # Convenience name for target.
