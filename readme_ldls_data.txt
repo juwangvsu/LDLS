@@ -1,7 +1,11 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
------------------------------------------------------
+-----------11/30/22 forward------------------------------------------
+see same file in LDLS repo
+
+-----------11/29/22------------------------------------------
+point cloud2:
 point cloud2:
 	/husky6/full_cloud don't use. not sure what this is
 	/husky6/lidar_points lidar data, has intensity channel
@@ -14,7 +18,9 @@ images:
 		frame_id: husky6/forward_color_optical_frame
 
 
-KITTI calib file prep:
+KITTI calib file prep: LDLS/data/kitti_demo/calib/000571.txt
+ P2: projection matrix
+ Tr_velo_to_cam: tf from lidar to camera
 
 tf from cam to base: (this go to the TR section of kitti calib file)
 At time 0.000
@@ -29,6 +35,16 @@ rosrun tf tf_echo /husky6/base husky6/forward_color_optical_frame
 camera projection matrix (kitti calib file):
    P = calib_dict['P2'].reshape((3, 4))
 	this need to be derived from the rostopic cam_info?
+
+rostopic echo /husky6/forward/color/camera_info
+  frame_id: "husky6/forward_color_optical_frame"
+height: 480
+width: 640
+distortion_model: "plumb_bob"
+D: [0.0, 0.0, 0.0, 0.0, 0.0]
+K: [620.5262451171875, 0.0, 322.3762512207031, 0.0, 620.6295166015625, 245.07872009277344, 0.0, 0.0, 1.0]
+R: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+P: [620.5262451171875, 0.0, 322.3762512207031, 0.0, 0.0, 620.6295166015625, 245.07872009277344, 0.0, 0.0, 0.0, 1.0, 0.0]
 
 ---------------------------
 mkdir output/pcd
