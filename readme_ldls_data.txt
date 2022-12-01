@@ -4,6 +4,9 @@ this file:
 -----------11/30/22 forward------------------------------------------
 see same file in LDLS repo
 
+add kitti 3d annotator
+https://github.com/brian-h-wang/kitti-3d-annotator.git
+
 -----------11/29/22------------------------------------------
 point cloud2:
 point cloud2:
