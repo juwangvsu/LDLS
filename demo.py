@@ -9,6 +9,7 @@ from lidar_segmentation.kitti_utils import load_kitti_lidar_data, load_kitti_obj
 from lidar_segmentation.utils import load_image
 from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
+import time
 
 # # Load input data
 # 
@@ -48,6 +49,11 @@ print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 import cupy as cp
 detector = MaskRCNNDetector()
 detections = detector.detect(image)
+t0=time.time()
+for n in range(50):
+  detections = detector.detect(image)
+print(" mask rcnn dt = %0.3f ms"%((time.time()-t0)*1000.0/n) )
+
 print('\n\n\n******** detection done****************\n\n\n')
 detections.visualize(image)
 
@@ -67,6 +73,11 @@ lidarseg = LidarSegmentation(projection)
 # This is useful for analysis or visualizing the diffusion, but slow.
 
 results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
+t0=time.time()
+for n in range(50):
+  results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
+print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
+
 
 print('\n\n\n******** lidarseg.run done****************\n\n\n')
 

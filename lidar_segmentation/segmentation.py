@@ -544,7 +544,7 @@ class LidarSegmentation(object):
             Y_gpu = cp.array(labels)
             print('Y_gpu used gpu mem: ', mempool.used_bytes())
             print('tt ', mempool.total_bytes())
-            input('hit enter to continue...')
+            #input('hit enter to continue...')
             # Create graph on GPU
             # This is a (n_lidar_points + n_pixels) by (n_lidar_points + n_pixels) matrix
             G_gpu = self.create_graph(lidar, projected[in_view, :],
@@ -552,7 +552,7 @@ class LidarSegmentation(object):
                                       n_cols=detections.masks.shape[1])
             print('after graph used gpu mem: ', mempool.used_bytes())
             print('tt ', mempool.total_bytes())
-            input('hit enter to continue...')
+            #input('hit enter to continue...')
 
             if save_all:
                 all_label_likelihoods = np.empty(

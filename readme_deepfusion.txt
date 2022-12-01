@@ -13,11 +13,26 @@ Test steps:
 	@docker:
 	 	conda activate LDLS
 		python demo.py
+test new code in host machine works:
+	venk/ldls_docker_bag/ldls_brain/
+
+	maskrcnn hybrid(native): 214.987 vs 619.678 ms 
+	maskrcnn hybrid(docker): 254.987 vs 619.678 ms 
+		the hybrid model use pytorch and torch2trt
+		the stock maskrcnn use tf
+	lidar process (native): 209.121 vs 312.450 ms
+	lidar process(docker) 232.771 vs 312.450 ms
+	kd_tree stuff took dt = 121.533 ms
 
 the ldls code in the docker image use hybrid mask_rcnn, improving the speed
 
 Status:
 	docker image runs ok, but torch not finding cuda() device. see testcuda.py output
+	test new code in host machine works:
+		venk/ldls_docker_bag/ldls_brain/
+	fixed: the host cuda version must be > the docker cuda version. so we upgrade to cuda 11.7 solve the problem
+		
+	
 
 --------------- run ldls in docker ----------------------
 clone ldls, install pyenv, conda, ldls, and various package
