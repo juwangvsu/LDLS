@@ -8,8 +8,14 @@
 	run_docker.sh
 	...bag
 Test steps:
-	docker load --input ldls.docker.image
+	cd ldls_docker_bag; 
+	if image not loaded/imported yet:
+		docker load --input ldls.docker.image
 		require > 50gb to load the image, after loading it use about 30gb
+		imported to dockerimg @ arldell /dev/nvme0n1p16
+	./run_docker.sh
+		docker container use cuda 11.6, host cuda must >=11.6
+		must use nvidia run time
 	@docker:
 	 	conda activate LDLS
 		python demo.py
