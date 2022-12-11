@@ -1,3 +1,11 @@
+tool to annotate 3D object, kitti_object lidar dataset
+
+conda activate ldls
+	python main.py
+
+dataset:
+	kitti/
+
 work in windows, 
 buggy in linux:
 	viewer() hang

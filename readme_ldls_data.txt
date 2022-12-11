@@ -49,9 +49,21 @@ K: [620.5262451171875, 0.0, 322.3762512207031, 0.0, 620.6295166015625, 245.07872
 R: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 P: [620.5262451171875, 0.0, 322.3762512207031, 0.0, 0.0, 620.6295166015625, 245.07872009277344, 0.0, 0.0, 0.0, 1.0, 0.0]
 
----------------------------
+-----------------build bag2pcd ----------
+arldell, lenova1
+
+cd ~/catkin_ws/src;
+ln -sn /media/student/data6/venk/LDLS/Tools_RosBag2KITTI/catkin_ws/src/obstale_detection
+catkin_make
+
+-----------------run bag2pcd ----------
+cd ~/Documents/dataset/ldls_docker_bag
+cd ~/Documents/dataset/arl_aws
+
 mkdir output/pcd
 mkdir output/png
+ rosbag play bag5.bag 
+ rosbag play 2021-07-09-10-33-16.bag
  rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/husky6/forward/color/image/compressed /pandar_points:=/husky6/point_cloud_pipeline/cloud
  rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/husky6/forward/color/image_repub/compressed /pandar_points:=/husky6/point_cloud_pipeline/cloud
 
