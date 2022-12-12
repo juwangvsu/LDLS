@@ -1,6 +1,14 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+-----------12/11/22 test apg data ------------------------------------------
+@lenova1
+	LDLS/data/apgdata
+	calib is copyed from kitti dataset, obviously incorrect, result very poor.
+	
+demo.py:
+	cmd line update:
+	python demo.py [apgdata 001145]
 -----------11/30/22 forward------------------------------------------
 see same file in LDLS repo
 

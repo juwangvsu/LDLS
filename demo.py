@@ -10,6 +10,7 @@ from lidar_segmentation.utils import load_image
 from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
 import time
+import sys
 
 # # Load input data
 # 
@@ -23,9 +24,24 @@ import time
 #image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
 #lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
 
-calib_path = Path("data/") / "_out" / "calib" / "00000262.txt"
-image_path = Path("data/") / "_out" / "image_2" / "00000262.png"
-lidar_path = Path("data/") / "_out" / "velodyne" / "00000262.bin"
+print('usage: python demo.py apgdata 001145')
+fnprefix= "_out"
+fnprefix2= "00000262"
+arglen=len(sys.argv)
+print(sys.argv)
+if arglen>1:
+    fnprefix = sys.argv[1]
+if arglen>2:
+    fnprefix2 = sys.argv[2]
+# Define file paths
+#calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
+#image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
+#lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
+
+calib_path = Path("data/") / fnprefix / "calib" / (fnprefix2+".txt")
+image_path = Path("data/") / fnprefix / "image_2" / (fnprefix2+".png")
+lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin")
+
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
 

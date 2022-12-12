@@ -1,5 +1,11 @@
 tool to annotate 3D object, kitti_object lidar dataset
 
+-------------setup.py --------------------------
+pip install -e .
+to run cmd line: 
+	view_kitti1
+
+---------------------------------------------------
 conda activate ldls
 	python main.py
 

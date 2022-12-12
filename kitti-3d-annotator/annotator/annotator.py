@@ -22,6 +22,14 @@ class Annotator(object):
             self.save_path.mkdir(parents=True)
 
 
+    def load_data1(self, filepath):
+        pc = kitti_utils.load_kitti_lidar_data(filepath,
+                                               load_reflectance=False)
+        self.points = pc
+        self.viewer = pptk.viewer(pc)
+        self.viewer.set(floor_level=kitti_utils.KITTI_GROUND_LEVEL)
+        self.viewer.set(point_size=0.01)
+        self.viewer.set(lookat=[0,0,0])
     def load_data(self, frame_num):
         """
         Load in KITTI data and initialize a viewer

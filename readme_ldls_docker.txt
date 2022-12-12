@@ -275,6 +275,8 @@ $PYTHONPATH: cv2 error
 	4.1.x but the /usr/local/lib/python2.7 might contain the opencv 3.2.0
 	somehow the cv2 might try to load the wrong one if there is an 
 	3.2.0 cv2.so at /usr/local/lib...
+	fix:
+		export PYTHONPATH=
 	
 
 --------additional pkgs installed --------------------

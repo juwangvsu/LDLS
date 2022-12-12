@@ -5,6 +5,8 @@ from annotator.annotator import Annotator
 
 class ExampleViewer(Annotator):
 
+    def view1(self, filepath):
+        self.load_data1(filepath)
     def view(self, frame_num):
         self.load_data(frame_num)
         load_file_path = self.save_path / ("%06d.txt" % self.frame_num)
