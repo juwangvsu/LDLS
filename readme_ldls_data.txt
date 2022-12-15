@@ -58,6 +58,7 @@ image coordinate is Y/z
 sensor setup: https://www.cvlibs.net/datasets/kitti/setup.php
 
 tf from cam to base: (this go to the TR section of kitti calib file)
+tf tf_echo husky6/base husky6/forwa_color_optical_frame
 At time 0.000
 - Translation: [0.446, 0.022, 0.524]
 - Rotation: in Quaternion [0.512, -0.496, 0.499, -0.492]
@@ -73,12 +74,6 @@ tf tf_echo husky6/forwa_color_optical_frame husky6/base
             in RPY (radian) [2.715, -1.551, -1.121]
             in RPY (degree) [155.585, -88.877, -64.213]
 
-tf tf_echo husky6/base husky6/forwa_color_optical_frame
-At time 0.000
-- Translation: [0.446, 0.022, 0.524]
-- Rotation: in Quaternion [0.512, -0.496, 0.499, -0.492]
-            in RPY (radian) [-1.589, -0.024, -1.562]
-            in RPY (degree) [-91.023, -1.367, -89.511]
 
 2022-06-08-12-57-32.bag tf msg not complete
 2022-06-08-12-53-16.bag tf good
