@@ -24,6 +24,8 @@ import sys
 #image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
 #lidar_path = Path("data/") / "kitti_demo" / "velodyne" / "000571.bin"
 
+#usepcl = False # True #change to false if pcl error and use the plotly display
+usepcl = True # True #change to false if pcl error and use the plotly display
 print('usage: python demo.py apgdata 001145')
 fnprefix= "_out"
 fnprefix2= "00000262"
@@ -50,7 +52,7 @@ image = load_image(image_path)
 image=image[:,:,:3]
 skimage.io.imshow(image)
 print(type(image), image.shape)
-input('pause')
+#input('pause')
 # Load lidar
 lidar = load_kitti_lidar_data(lidar_path, load_reflectance=False)
 print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
@@ -66,7 +68,7 @@ import cupy as cp
 detector = MaskRCNNDetector()
 detections = detector.detect(image)
 t0=time.time()
-for n in range(50):
+for n in range(2):
   detections = detector.detect(image)
 print(" mask rcnn dt = %0.3f ms"%((time.time()-t0)*1000.0/n) )
 
@@ -90,7 +92,7 @@ lidarseg = LidarSegmentation(projection)
 
 results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
 t0=time.time()
-for n in range(50):
+for n in range(2):
   results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
 print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
@@ -106,10 +108,19 @@ print('\n\n\n******** lidarseg.run done****************\n\n\n')
 from lidar_segmentation.plotting import plot_segmentation_result
 
 # Show points colored by class label
-plot_segmentation_result(results, label_type='class')
-
+if usepcl:
+    import visualization
+    print('results.points: ', results.points.shape, results.points[1])
+#    print('labels: ', results.class_labels())
+    visualization.save_labels(results.class_labels()*300 + 50)
+    visualization.displaylidar(results.points, 'ldls seg result', results.class_labels())
+   # visualization.displaylidar(lidar, 'ldls lidar')
+#    visualization.visualization_test()
+else:
+    print('labels: ', results.class_labels())
+    plot_segmentation_result(results, label_type='class')
 # Show points colored by instance label
-plot_segmentation_result(results, label_type='instance')
+    plot_segmentation_result(results, label_type='instance')
 
 print('\n\n\n******** plot_segmentation_result done****************\n\n\n')
 
@@ -119,8 +130,8 @@ print('\n\n\n******** plot_segmentation_result done****************\n\n\n')
 
 from lidar_segmentation.plotting import plot_diffusion
 
-results_all = lidarseg.run(lidar, detections, max_iters=50, save_all=True)
-plot_diffusion(results_all)
+#results_all = lidarseg.run(lidar, detections, max_iters=50, save_all=True)
+#plot_diffusion(results_all)
 
 results.class_labels()
 

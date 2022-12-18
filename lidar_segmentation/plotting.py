@@ -181,13 +181,13 @@ def plot_points(points, size=1.0, opacity=0.8, color=None, colorscale=None,):
     y = points[:,1]
     z = points[:,2]
     # xy_lim = np.max(np.abs([np.min(x), np.max(x), np.min(y), np.max(y)]))
-    xy_lim = 20
+    xy_lim = 20 
     zmin = -7
-    zmax = zmin + 2*xy_lim
+    zmax = 10
     layout = go.Layout(margin=dict(l=0,r=0,b=0,t=0),
-                       paper_bgcolor='rgb(55,55,55)',
-                       scene=dict(aspectmode='cube',
-                                xaxis=dict(title='x', range=[0, 2*xy_lim]),
+                       paper_bgcolor='rgb(0,0,0)',
+                       scene=dict(aspectmode='auto',
+                                xaxis=dict(title='x', range=[-5, 2*xy_lim]),
                                 yaxis=dict(title='y', range=[-xy_lim,xy_lim]),
                                 zaxis=dict(title='z', range=[zmin,zmax])))
     fig = go.Figure(data=data,layout=layout)
