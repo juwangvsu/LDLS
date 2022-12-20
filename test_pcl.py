@@ -17,7 +17,7 @@ pcolor_np3 =pcolor_np3.reshape(numpoints,3)
 
 pcolor_np3[:,0] = np.right_shift(pcolor_np,16)/255
 pcolor_np3[:,1] = np.right_shift(np.bitwise_and(pcolor_np,0xffff),8)/255
-np.bitwise_and(pcolor_np,0xff)/255
+pcolor_np3[:,2] = np.bitwise_and(pcolor_np,0xff)/255
 
 
 #pcolor_np3 = np.pad(pcolor_np.reshape(numpoints,1),((0,0),(0,2)), mode='constant', constant_values=60)

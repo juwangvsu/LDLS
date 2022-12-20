@@ -1,0 +1,108 @@
+<module 'logging' from '/usr/lib/python2.7/logging/__init__.pyc'>
+path:        bag5.bag
+version:     2.0
+duration:    6:11s (371s)
+start:       Nov 15 2022 14:05:01.14 (1668539101.14)
+end:         Nov 15 2022 14:11:12.62 (1668539472.62)
+size:        42.3 GB
+messages:    1341841
+compression: none [19908/19908 chunks]
+types:       arl_sensor_msgs/GPSCorrelationTimestamp [4e5f92f97f1e690060cb818cb5db06b7]
+             diagnostic_msgs/DiagnosticArray         [60810da900de1dd6ddd437c3503511da]
+             diagnostic_msgs/DiagnosticStatus        [d0ce08bc6e5ba34c7754f563a9cabaf1]
+             geometry_msgs/PoseStamped               [d3812c3cbc69362b77dc0b19b345f8f5]
+             geometry_msgs/Twist                     [9f195f881246fdfa2798d1d3eebca84a]
+             geometry_msgs/Vector3                   [4a842b65f413084dc2b10fb484ea7f17]
+             geometry_msgs/Vector3Stamped            [7b324c7325e683bf02a9b14b01090ec7]
+             husky_msgs/HuskyStatus                  [fd724379c53d89ec4629be3b235dc10d]
+             jackal_msgs/Drive                       [601cf097cd47c174590c366c6ddd5fb3]
+             jackal_msgs/Status                      [c851ebcf9a6e20b196bc7894e285b4f6]
+             nav_msgs/Odometry                       [cd5e73d190d741a2f92e81eda573aca7]
+             omnimapper_msgs/FrameNotificationSymbol [a3c1fdfae26af22db91dba0ab9cfbdfa]
+             omnimapper_msgs/FrameNotifications      [830ff87cc45e3984f947c1ecd6fd6fb3]
+             omnimapper_msgs/PoseGraph               [f892ca8f7e75fc103e7c32ac09208641]
+             realsense2_camera/Extrinsics            [3627b43073f4cd5dd6dc179a49eda2ad]
+             rosgraph_msgs/Log                       [acffd30cd6b6de30f120938c17c593fb]
+             sensor_msgs/CameraInfo                  [c9a58c1b0b154e0e6da7578cb991d214]
+             sensor_msgs/CompressedImage             [8f7a12909da2c9d3332d540a0977563f]
+             sensor_msgs/Imu                         [6a62c6daae103f4ff57a132d6f95cec2]
+             sensor_msgs/JointState                  [3066dcd76a6cfaef579bd0f34173e9fd]
+             sensor_msgs/Joy                         [5a9ea5f83505693b71e785041e67a8bb]
+             sensor_msgs/PointCloud2                 [1158d486dd51d683ce2f1be655c3c181]
+             tf2_msgs/TFMessage                      [94810edda583a504dfda3829e70d7eec]
+             visualization_msgs/MarkerArray          [d155b9ce5188fbaf89745847fd5882d7]
+             zip/CompressedMessage                   [f43a8e1b362b75baa741461b46adc7e0]
+topics:      /chinook/accepted_frame_notifications                                   1 msg     : omnimapper_msgs/FrameNotificationSymbol
+             /chinook/cmd_vel                                                    10698 msgs    : geometry_msgs/Twist                    
+             /chinook/forward/aligned_depth_to_color/image_raw/compressed        10694 msgs    : sensor_msgs/CompressedImage            
+             /chinook/forward/color/camera_info                                  10694 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/forward/color/image_rect_color/compressed                  10693 msgs    : sensor_msgs/CompressedImage            
+             /chinook/forward/depth/camera_info                                  10693 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/forward/depth/image_rect_raw/compressed                    10693 msgs    : sensor_msgs/CompressedImage            
+             /chinook/forward/extrinsics/depth_to_color                              1 msg     : realsense2_camera/Extrinsics           
+             /chinook/forward/imu                                               142576 msgs    : sensor_msgs/Imu                        
+             /chinook/forward/infra1/camera_info                                 10694 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/forward/infra1/image_rect_raw/compressed                   10693 msgs    : sensor_msgs/CompressedImage            
+             /chinook/forward/infra2/camera_info                                 10694 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/forward/infra2/image_rect_raw/compressed                   10693 msgs    : sensor_msgs/CompressedImage            
+             /chinook/frame_notifications                                            3 msgs    : omnimapper_msgs/FrameNotifications     
+             /chinook/husky_velocity_controller/cmd_vel                          10697 msgs    : geometry_msgs/Twist                    
+             /chinook/husky_velocity_controller/odom                              3566 msgs    : nav_msgs/Odometry                      
+             /chinook/imu/data                                                   44573 msgs    : sensor_msgs/Imu                        
+             /chinook/imu/data_enu                                               44573 msgs    : sensor_msgs/Imu                        
+             /chinook/imu/data_ned/orientation                                   44573 msgs    : geometry_msgs/Vector3                  
+             /chinook/imu/pps_status                                             44573 msgs    : arl_sensor_msgs/GPSCorrelationTimestamp
+             /chinook/joint_states                                                3566 msgs    : sensor_msgs/JointState                 
+             /chinook/joy_teleop/cmd_vel                                             1 msg     : geometry_msgs/Twist                    
+             /chinook/joy_teleop/joy                                              7114 msgs    : sensor_msgs/Joy                        
+             /chinook/lidar_points                                                3566 msgs    : sensor_msgs/PointCloud2                
+             /chinook/local_point_cloud_cache/renderers/recent_map_compressed     3563 msgs    : zip/CompressedMessage                  
+             /chinook/odom                                                       44560 msgs    : nav_msgs/Odometry                      
+             /chinook/point_cloud_cache/renderers/full_map_compressed                2 msgs    : zip/CompressedMessage                  
+             /chinook/pose                                                       44562 msgs    : geometry_msgs/PoseStamped              
+             /chinook/pose_graph                                                     1 msg     : omnimapper_msgs/PoseGraph              
+             /chinook/status                                                       356 msgs    : husky_msgs/HuskyStatus                 
+             /chinook/stereo_left/camera_info                                     6623 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/stereo_left/image_rect_color/compressed                     6623 msgs    : sensor_msgs/CompressedImage            
+             /chinook/stereo_right/camera_info                                    9747 msgs    : sensor_msgs/CameraInfo                 
+             /chinook/stereo_right/image_rect_color/compressed                    9747 msgs    : sensor_msgs/CompressedImage            
+             /chinook/worldmodel_rviz/object_markers                               358 msgs    : visualization_msgs/MarkerArray         
+             /diagnostics                                                       106356 msgs    : diagnostic_msgs/DiagnosticArray        
+             /diagnostics_agg                                                     1070 msgs    : diagnostic_msgs/DiagnosticArray        
+             /diagnostics_toplevel_state                                          1070 msgs    : diagnostic_msgs/DiagnosticStatus       
+             /os_cloud_node/points                                                3711 msgs    : sensor_msgs/PointCloud2                
+             /rosout_agg                                                          8910 msgs    : rosgraph_msgs/Log                      
+             /sobek/accepted_frame_notifications                                   198 msgs    : omnimapper_msgs/FrameNotificationSymbol
+             /sobek/cmd_drive                                                    17820 msgs    : jackal_msgs/Drive                      
+             /sobek/cmd_vel                                                      10696 msgs    : geometry_msgs/Twist                    
+             /sobek/forward/aligned_depth_to_color/image_raw/compressed          10692 msgs    : sensor_msgs/CompressedImage            
+             /sobek/forward/color/camera_info                                    10692 msgs    : sensor_msgs/CameraInfo                 
+             /sobek/forward/color/image_rect_color/compressed                    10691 msgs    : sensor_msgs/CompressedImage            
+             /sobek/forward/depth/camera_info                                    10690 msgs    : sensor_msgs/CameraInfo                 
+             /sobek/forward/depth/image_rect_raw/compressed                      10690 msgs    : sensor_msgs/CompressedImage            
+             /sobek/forward/extrinsics/depth_to_color                                1 msg     : realsense2_camera/Extrinsics           
+             /sobek/forward/imu                                                 142371 msgs    : sensor_msgs/Imu                        
+             /sobek/forward/infra1/camera_info                                   10690 msgs    : sensor_msgs/CameraInfo                 
+             /sobek/forward/infra1/image_rect_raw/compressed                     10690 msgs    : sensor_msgs/CompressedImage            
+             /sobek/forward/infra2/camera_info                                   10690 msgs    : sensor_msgs/CameraInfo                 
+             /sobek/forward/infra2/image_rect_raw/compressed                     10690 msgs    : sensor_msgs/CompressedImage            
+             /sobek/frame_notifications                                            204 msgs    : omnimapper_msgs/FrameNotifications     
+             /sobek/imu/data                                                     44555 msgs    : sensor_msgs/Imu                        
+             /sobek/imu/mag                                                      26747 msgs    : geometry_msgs/Vector3Stamped           
+             /sobek/jackal_velocity_controller/cmd_vel                           13834 msgs    : geometry_msgs/Twist                    
+             /sobek/jackal_velocity_controller/odom                              17822 msgs    : nav_msgs/Odometry                      
+             /sobek/joint_states                                                 17823 msgs    : sensor_msgs/JointState                 
+             /sobek/joy_teleop/cmd_vel                                            9546 msgs    : geometry_msgs/Twist                    
+             /sobek/joy_teleop/joy                                               12467 msgs    : sensor_msgs/Joy                        
+             /sobek/lidar_points                                                  3565 msgs    : sensor_msgs/PointCloud2                
+             /sobek/local_point_cloud_cache/renderers/recent_map_compressed       3563 msgs    : zip/CompressedMessage                  
+             /sobek/odom                                                         44541 msgs    : nav_msgs/Odometry                      
+             /sobek/point_cloud_cache/renderers/full_map_compressed                261 msgs    : zip/CompressedMessage                  
+             /sobek/pose                                                         44544 msgs    : geometry_msgs/PoseStamped              
+             /sobek/pose_graph                                                     198 msgs    : omnimapper_msgs/PoseGraph              
+             /sobek/status                                                         357 msgs    : jackal_msgs/Status                     
+             /sobek/worldmodel_rviz/object_markers                                 357 msgs    : visualization_msgs/MarkerArray         
+             /spot/odometry                                                       6186 msgs    : nav_msgs/Odometry                      
+             /tf                                                                117254 msgs    : tf2_msgs/TFMessage                     
+             /tf_aggregate                                                        7127 msgs    : tf2_msgs/TFMessage                     
+             /tf_static                                                              8 msgs    : tf2_msgs/TFMessage

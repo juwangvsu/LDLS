@@ -79,7 +79,7 @@ coordinate system Y = [uz vz z]' on image plane
 image coordinate is Y/z
 sensor setup: https://www.cvlibs.net/datasets/kitti/setup.php
 
-tf from base to cam: (this go to the TR section of kitti calib file)
+tf from base to cam: 
 rosrun tf tf_echo husky6/base husky6/forward_color_optical_frame
 this convert base frame to cam frame, or it convert a cam frame point to base frame point,
 so to transform a base frame point p_b to cam frame p_c, we must use
@@ -95,6 +95,7 @@ At time 0.000
 	   0.0239977, -0.9995464, -0.0181974 ]]
 
 tf tf_echo husky6/forward_color_optical_frame husky6/base 
+(this go to the TR section of kitti calib file)
 - Translation: T2 [0.005, 0.532, -0.437]
 - Rotation: in Quaternion [0.512, -0.496, 0.499, 0.492]
             in RPY (radian) [2.715, -1.551, -1.121]
