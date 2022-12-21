@@ -2,6 +2,40 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
+--------12/20/22 run j.roger localized_labeler ----------
+
+arldell:
+	/media/student/data6/phoenix-cdea_arl_objectmapper/phoenix-r1
+	dockerimg: /dev/nvme0n1p13
+test:
+	roslaunch localized_labeler interrobot_labeler.launch bag:=/media/student/data10/arl_aws/bag5.bag
+	this will play the bag file, and create label for image topic observed
+	by chinook. the label is 6-point polygon 
+	for sobek when it show in the image. labelme
+	tool is used. label generated is json format. this can be used to train
+	the mask rcnn? the label so far is not tight.
+
+data output:
+	~/Documents/dataset/arl_aws/ir_labels
+	screen shot: jroger-labeler.png
+
+issue: 
+	it runs, 
+	install image_view in docker
+	rosrun image_view image_view image:=/sobek/forward/color/image_rect_color _image_transport:=compressed
+	(2) fix the output_path, hardcoded in interrobot_labeller.cpp, node crash if fail to creae the dir.
+	
+pending:
+	retrain mask rcnn detec sobek
+	https://app.roboflow.com/project/robot-seg/1
+		a website to test train my dataset
+	
+note:
+	phoenix src contain a ros wrapper of maskrcnn-benchmark
+	can't run in docker, missing maskrcnn-benchmark pkg
+	the maskrcnn-benchmark is facebook proj, now become detectron 2?
+	LDLS use a tensorflow based maskrcnn
+
 -------------------12/19/22 bag5 extraction --------------
 rosbag decompress bag5.bag
 mkdir output/pcd
