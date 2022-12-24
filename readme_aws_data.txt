@@ -2,13 +2,33 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
---------12/20/22 run j.roger localized_labeler ----------
+---------12/23/22 mask rcnn train balloon dataset note --------------
+LDLS/ use mrcnn, pip installed in ldls env
+	mrcnn use tensorflow
+	mrcnn retrain mem/gpu heavy, 12gb gpu, 32 gb mem
+train:
+	conda activate ldls
+	cd LDLS/mask_rcnn/samples
+	python balloon.py train --dataset=/media/student/data_4tb1/coco/balloon/balloon --weights=coco
 
+train results:
+	LDLS/logs/
+
+arldell: gpu too small, change image_per_gpu to 1, runs but slow
+hptitan: mem small, to upgrade to 32gb
+lenova1
+
+--------12/20/22 run j.roger localized_labeler ----------
+dve_dataset
+lenova1:
+	/media/student/data_4tb2/phoenix-r1/
 arldell:
 	/media/student/data6/phoenix-cdea_arl_objectmapper/phoenix-r1
 	dockerimg: /dev/nvme0n1p13
 test:
+	cd src/util/localized_labeler/launch
 	roslaunch localized_labeler interrobot_labeler.launch bag:=/media/student/data10/arl_aws/bag5.bag
+	 roslaunch localized_labeler interrobot_labeler.launch bag:=/media/student/data_4tb1/arl_aws/bag5.bag
 	this will play the bag file, and create label for image topic observed
 	by chinook. the label is 6-point polygon 
 	for sobek when it show in the image. labelme
@@ -19,11 +39,15 @@ data output:
 	~/Documents/dataset/arl_aws/ir_labels
 	screen shot: jroger-labeler.png
 
-issue: 
+issue (fixed): 
 	it runs, 
 	install image_view in docker
+		apt update
+		apt install ros-noetic-image-view
 	rosrun image_view image_view image:=/sobek/forward/color/image_rect_color _image_transport:=compressed
 	(2) fix the output_path, hardcoded in interrobot_labeller.cpp, node crash if fail to creae the dir.
+		line 136 to 
+		private_nh_.param("output_path", output_path_, std::string("/media/student/data_4tb1/arl_aws$/ir_labels"));
 	
 pending:
 	retrain mask rcnn detec sobek
@@ -80,6 +104,7 @@ roslaunch interrobot_labeler.launch bag:=/media/student/data10/arl_aws/bag5.bag
 
 .catkin_docker:
 	add data10 to mount for docker
+		export EXTRA_DOCKER_ARGS="${EXTRA_DOCKER_ARGS:--it --net=host --ipc host --ulimit core=-1 --security-opt seccomp=unconfined --cap-add=SYS_PTRACE -v /var/run/dbus:/var/run/dbus -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket -v /media/student/data_4tb1/arl_aws:/media/student/data_4tb1/arl_aws}"
 
 -----------------------bag5.bag -----------------------
 lenova1, arldell
@@ -115,3 +140,8 @@ other:
 
 /sobek/local_point_cloud_cache/renderers/recent_map_compressed       3563 msgs    : zip/CompressedMessage      
 /sobek/point_cloud_cache/renderers/full_map_compressed                261 msgs    : zip/CompressedMessage      
+
+----------------FAQ trouble shooting ------------
+dve_dataset branch build issue in docker:
+        see readme.txt in phoenix_note/
+
