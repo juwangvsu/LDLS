@@ -8,12 +8,22 @@ Written by Waleed Abdulla
 
 ------------------------------------------------------------
 
-Usage: import the module (see Jupyter notebooks for examples), or run from
-       the command line as such:
 jw note:
+    12/26/22: balloon2 work on jackal detection. 
+        coco/balloon/balloon2: jackal dataset, src arl_aws/ir_labels
+        label format via format, follow the readme inst  to convert labelme
+        label to via format
+
+        splash now support batch mode:
+            if --image is a jpg file, do normal splash, 
+            if folder than do all jpg files in the folder
+            output saved to ./mrcnn_output folder under provided folder
+        visualize only for single image case
+
     conda activate ldls
 
-python balloon.py train --dataset=/media/student/data_4tb1/coco/balloon/balloon --weights=coco
+python balloon2.py train --dataset=/media/student/data11/coco/balloon/balloon2 --weights=coco
+
 
     # Train a new model starting from pre-trained COCO weights
     python3 balloon.py train --dataset=/path/to/balloon/dataset --weights=coco
@@ -24,8 +34,10 @@ python balloon.py train --dataset=/media/student/data_4tb1/coco/balloon/balloon 
     # Train a new model starting from ImageNet weights
     python3 balloon.py train --dataset=/path/to/balloon/dataset --weights=imagenet
 
-    # Apply color splash to an image
-    python balloon.py splash --weights=../../logs/balloon20221226T0112/mask_rcnn_balloon_0011.h5 --image=/media/student/data11/coco/balloon/balloon/val/3825919971_93fb1ec581_b.jpg
+    # Apply color splash to an image or a folder's images
+
+    python balloon2.py splash --weights=../../logs/balloon2_20221226T1741/mask_rcnn_balloon2__0007.h5 --image=/media/student/data10/arl_aws/ir_labels/image01904.jpg
+    python balloon2.py splash --weights=../../logs/balloon2_20221226T1741/mask_rcnn_balloon2__0007.h5 --image=/media/student/data10/arl_aws/ir_labels_s/
 
     # Apply color splash to video using the last weights you trained
     python3 balloon.py splash --weights=last --video=<URL or path to file>
@@ -37,7 +49,9 @@ import json
 import datetime
 import numpy as np
 import skimage.draw
+import glob
 
+from pathlib import Path
 # Root directory of the project
 ROOT_DIR = os.path.abspath("../../")
 
@@ -63,7 +77,7 @@ class BalloonConfig(Config):
     Derives from the base Config class and overrides some values.
     """
     # Give the configuration a recognizable name
-    NAME = "balloon"
+    NAME = "balloon2_"
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
@@ -76,7 +90,7 @@ class BalloonConfig(Config):
     STEPS_PER_EPOCH = 100
 
     # Skip detections with < 90% confidence
-    DETECTION_MIN_CONFIDENCE = 0.9
+    DETECTION_MIN_CONFIDENCE = 0.5
 
 
 ############################################################
@@ -213,6 +227,7 @@ def color_splash(image, mask):
     # Make a grayscale copy of the image. The grayscale copy still
     # has 3 RGB channels, though.
     gray = skimage.color.gray2rgb(skimage.color.rgb2gray(image)) * 255
+    image[:,:,2] = image[:,:,2]  + 70 # add blue color
     # Copy color pixels from the original color image where mask is set
     if mask.shape[-1] > 0:
         # We're treating all instances as one, so collapse the mask into one layer
@@ -222,23 +237,47 @@ def color_splash(image, mask):
         splash = gray.astype(np.uint8)
     return splash
 
+def splash_folder(model, image_path, savepath=None, visualize=True):
+    print('splashing a folder ', image_path)
+    jpg_l=glob.glob(image_path+'/*.jpg')
+    savepath=image_path+"/splash_output"
+    path = Path(savepath)
+    path.mkdir(exist_ok=True)
+    for imfn in jpg_l:
+        fn =imfn.split('.')[0].split('/')[-1]
+        img_path = savepath +"/"+ fn +".png"
+        splash_image(model, imfn, savepath=img_path, visualize=visualize)
+
+def splash_image(model, image_path, savepath=None, visualize=True):
+        print("Running on {}".format(image_path))
+        image = skimage.io.imread(image_path)
+        r = model.detect([image], verbose=1)[0]
+        splash = color_splash(image, r['masks'])
+        # Save output
+        if savepath is None:
+            file_name = "splash_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
+            skimage.io.imsave(file_name, splash)
+            print("Saved to ", file_name)
+        else:
+            skimage.io.imsave(savepath, splash)
+            print("Saved to ", savepath)
+        if visualize:
+            skimage.io.imshow(splash)
+            skimage.io.show()
+        r['masks']='shape '+str(r['masks'].shape) + 'removed for console cleaness '
+        print('detection result: ', r)
+
 
 def detect_and_color_splash(model, image_path=None, video_path=None):
     assert image_path or video_path
 
     # Image or video?
     if image_path:
-        # Run model detection and generate the color splash effect
-        print("Running on {}".format(args.image))
-        # Read image
-        image = skimage.io.imread(args.image)
-        # Detect objects
-        r = model.detect([image], verbose=1)[0]
-        # Color splash
-        splash = color_splash(image, r['masks'])
-        # Save output
-        file_name = "splash_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
-        skimage.io.imsave(file_name, splash)
+        path = Path(image_path)
+        if path.is_file():
+            splash_image(model, image_path)
+        if path.is_dir():
+            splash_folder(model, image_path, visualize=False)
     elif video_path:
         import cv2
         # Video capture
@@ -272,7 +311,7 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
                 vwriter.write(splash)
                 count += 1
         vwriter.release()
-    print("Saved to ", file_name)
+        print("Saved to ", file_name)
 
 
 ############################################################

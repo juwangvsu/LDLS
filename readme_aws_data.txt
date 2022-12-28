@@ -2,6 +2,47 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
+---------12/26/22 mask rcnn train jackal balloon2.py --------------
+converted labelme label to via format so can use balloon2.py
+train result is good. 
+
+test:
+	python3 balloon2.py splash --weights=../../logs/balloon2_20221226T1741/mask_rcnn_balloon2__0007.h5 --image=/media/student/data10/arl_aws/ir_labels_s
+
+train:
+	python balloon2.py train --dataset=/media/student/data11/coco/balloon/balloon2 --weights=coco
+
+label convert:
+	python json_laelme2via.py
+
+test result:
+	/media/student/data10/arl_aws/ir_labels_s/splash_output/
+	see notes inside the code
+
+---------12/23/22 mask rcnn train jackal dataset note --------------
+
+cd /media/student/data10/arl_aws
+splitfolders --output ir_labels_s/json_split --ratio .8 .2 -- ir_labels_s
+	this split the json files @ir_labels_s/class1 to
+	 ir_labels_s/json_split/train val/
+
+python jackal.py train --dataset=/media/student/data10/arl_aws/ir_labels/json_split  --weights=coco
+
+python jackal.py splash --weights=../../logs/jackal20221225T1806/mask_rcnn_jackal_0001.h5 --image=/media/student/data10/arl_aws/ir_labels/image00084.jpg
+
+status:
+	pause as balloon2.py works now
+
+----- 12/23/22 relabed a small data set----------------
+ir_labels_s_relabel/albert/*.json, relabeld
+			   class1/*.json---- post processed json_fix_albert.py
+			   json_split/train
+				      val ----- after splitfolders cmd
+(1) mask_rcnn/samples$ python json_fix_albert.py
+(2) splitfolders --output ir_labels_s_relabel/albert/json_split --ratio .8 .2 -- ir_labels_s_relabel/albert
+	split the relabeled small data set
+(3) python jackal.py train --dataset=/media/student/data10/arl_aws/ir_labels_s_relabel/albert/json_split  --weights=coco
+
 ---------12/23/22 mask rcnn train balloon dataset note --------------
 LDLS/ use mrcnn, pip installed in ldls env
 	mrcnn use tensorflow
@@ -10,7 +51,12 @@ train:
 	conda activate ldls
 	cd LDLS/mask_rcnn/samples
 	python balloon.py train --dataset=/media/student/data_4tb1/coco/balloon/balloon --weights=coco
-
+		lenova1
+	python balloon.py train --dataset=/media/student/data11/coco/balloon/balloon --weights=coco
+		arldell
+test:
+	python3 balloon.py splash --weights=../../logs/balloon20221226T0112/mask_rcnn_balloon_0011.h5 --image=/media/student/data11/coco/balloon/balloon/val/3825919971_93fb1ec581_b.jpg
+	
 train results:
 	LDLS/logs/
 

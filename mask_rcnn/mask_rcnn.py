@@ -50,12 +50,14 @@ class InferenceConfig(coco.CocoConfig):
 
 
 class MaskRCNNDetector(object):
-    def __init__(self, use_gpu=False):
+    def __init__(self, h5path=None, use_gpu=False):
         # Directory to save logs and trained model
         MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 
         # Local path to trained weights file
         COCO_MODEL_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
+        if not h5path is None:
+            COCO_MODEL_PATH = h5path
         # Download COCO trained weights from Releases if needed
         if not os.path.exists(COCO_MODEL_PATH):
             utils.download_trained_weights(COCO_MODEL_PATH)

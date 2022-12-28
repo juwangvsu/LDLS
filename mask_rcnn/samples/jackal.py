@@ -25,7 +25,7 @@ python jackal.py train --dataset=/media/student/data10/arl_aws/ir_labels/json_sp
     python3 balloon.py train --dataset=/path/to/balloon/dataset --weights=imagenet
 
     # Apply color splash to an image
-    python3 balloon.py splash --weights=/path/to/weights/file.h5 --image=<URL or path to file>
+    python jackal.py splash --weights=../../logs/jackal20221224T1629/mask_rcnn_jackal_0014.h5 --image=/media/student/data10/arl_aws/ir_labels/image00204.jpg
 
     # Apply color splash to video using the last weights you trained
     python3 balloon.py splash --weights=last --video=<URL or path to file>
@@ -102,7 +102,7 @@ class JackalDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("jackal", 1, "jackal")
+        self.add_class("sobek", 1, "sobek")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
@@ -126,7 +126,7 @@ class JackalDataset(utils.Dataset):
         # Note: In VIA 2.0, regions was changed from a dict to a list.
         ann_list = self.load_jsons(dataset_dir+"/"+subset+"/class1")
         annotations = ann_list
-        print(annotations)
+        #print(annotations)
         #annotations = json.load(open(os.path.join(dataset_dir, subset+".json")))
         #annotations = list(annotations.values())  # don't need the dict keys
 
@@ -144,7 +144,7 @@ class JackalDataset(utils.Dataset):
             #    polygons = [r['shape_attributes'] for r in a['regions'].values()]
             #else:
             #    polygons = [r['shape_attributes'] for r in a['regions']] 
-            print('ann: ', a)
+            #print('ann: ', a)
             polygons=[]
             if len(a['shapes'])>0:
                 #polygons=a['shapes'][0]['points']
@@ -155,7 +155,7 @@ class JackalDataset(utils.Dataset):
                     poly2 = {'name': 'polygon', 'all_points_x': xs, 'all_points_y': ys}
                     polygons.append(poly2)
                     #polygons = [{'name': 'polygon', 'all_points_x': None} for poly in a['shapes']]  
-            print('polygons: ', polygons)
+            #print('polygons: ', polygons)
             # load_mask() needs the image size to convert polygons to masks.
             # Unfortunately, VIA doesn't include it in JSON, so we must read
             # the image. This is only managable since the dataset is tiny.
@@ -167,7 +167,7 @@ class JackalDataset(utils.Dataset):
             height, width = image.shape[:2]
 
             self.add_image(
-                "jackal",
+                "sobek",
                 image_id=a['imagePath'],  # use file name as a unique image id
                 path=image_path,
                 width=width, height=height,
@@ -182,18 +182,20 @@ class JackalDataset(utils.Dataset):
         """
         # If not a balloon dataset image, delegate to parent class.
         image_info = self.image_info[image_id]
-        print('load_mask: ', image_info)
-        print('load_mask polygon: ', image_info["polygons"])
-        if image_info["source"] != "jackal":
+        #print('load_mask: ', image_info)
+        #print('load_mask polygon: ', image_info["polygons"])
+        if image_info["source"] != "sobek":
             return super(self.__class__, self).load_mask(image_id)
 
         # Convert polygons to a bitmap mask of shape
-        # [height, width, instance_count]
+        # [height, width, instance_count]a
+        print('load_mask: ', image_info["source"])
         info = self.image_info[image_id]
         mask = np.zeros([info["height"], info["width"], len(info["polygons"])],
                         dtype=np.uint8)
         for i, p in enumerate(info["polygons"]):
             # Get indexes of pixels inside the polygon and set them to 1
+            print('--------------------------------t2')
             rr, cc = skimage.draw.polygon(p['all_points_y'], p['all_points_x'])
             mask[rr, cc, i] = 1
 
@@ -204,7 +206,7 @@ class JackalDataset(utils.Dataset):
     def image_reference(self, image_id):
         """Return the path of the image."""
         info = self.image_info[image_id]
-        if info["source"] == "jackal":
+        if info["source"] == "sobek":
             return info["path"]
         else:
             super(self.__class__, self).image_reference(image_id)
@@ -264,6 +266,7 @@ def detect_and_color_splash(model, image_path=None, video_path=None):
         image = skimage.io.imread(args.image)
         # Detect objects
         r = model.detect([image], verbose=1)[0]
+        print('detected mask: ', r['masks'].shape)
         # Color splash
         splash = color_splash(image, r['masks'])
         # Save output
