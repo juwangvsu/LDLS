@@ -1,6 +1,10 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+---------1/4/22 sensor caliberation notes from phoenix --------------------
+https://gitlab.sitcore.net/aimm/phoenix-r1/-/blob/master/src/sensors/calibration/msg-cal/msg_cal/tutorial/README.md
+https://gitlab.sitcore.net/aimm/phoenix-r1/-/wikis/Tutorials/Multi-Sensor-Calibration
+
 -----------12/16/22 add open3d as viewer  -------------------------------------
 open3d viewing work
 it is a bit ugly with python-pcl and open3d code mixed.  python-pcl is legacy code, but function limited
