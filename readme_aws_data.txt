@@ -2,6 +2,28 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
+-------------------1/30/23 bag5 playback visualize --------------
+rosbag play bag5.bag
+@docker rviz, load bag5.rviz
+@docker rosrun zip map_zip decompress /sobek/point_cloud_cache/renderers/full_map
+
+--------------------1/30/23 re-run bag5.bag to full stack---------
+https://gitlab.sitcore.net/aimm/phoenix-r1/-/wikis/TechnicalNotes/Running-Bags
+see 9/22/22 readme_info
+arl_aws bag5.bag only contain sensor data and tf,
+recorded bag file contain lidar, camera etc
+to run full stack on the bag data,
+        (1) generate a launch file based on info in the bag file
+        (2) use a customized rviz file (modified from samoyed.rviz from phoenix_bag_launch
+        (3) run launch file
+
+rosrun phoenix_bag_launch generate_bag_args MIT-CLEAR/06_24_friday/acl_jackal2/clipper_fig8_clockwise_2022-06-24-14-44-56.bag -o mylaunch.launch
+roslaunch mylaunch.launch
+        rviz global frame use acl_jackal2/base. if use acl_jackal2/map the lidar data display not working about a tf extrapolation error
+
+rosrun phoenix_bag_launch generate_bag_args sim_data_2022-09-25-15-36-25.bag -o mylaunch_wartysim.launch
+roslaunch mylaunch_waratysim.launch
+
 ---------12/26/22 mask rcnn train jackal balloon2.py --------------
 converted labelme label to via format so can use balloon2.py
 train result is good. 
@@ -184,8 +206,31 @@ other:
 /chinook/husky_velocity_controller/odom                              3566 msgs    : nav_msgs/Odometry        
 
 
-/sobek/local_point_cloud_cache/renderers/recent_map_compressed       3563 msgs    : zip/CompressedMessage      
-/sobek/point_cloud_cache/renderers/full_map_compressed                261 msgs    : zip/CompressedMessage      
+map: zip compressed format, rviz can't display
+	/sobek/local_point_cloud_cache/renderers/recent_map_compressed       3563 msgs    : zip/CompressedMessage      
+	/sobek/point_cloud_cache/renderers/full_map_compressed                261 msgs    : zip/CompressedMessage      
+
+	/.../global_occ_grid_converter pub full_map
+		pkg/node: arl_grid_map_ros/grid_map_to_occupancy_grid_node
+			convert a grid_map message into an OccupancyGrid and publish
+			sub: /warty/map/global
+			pub:
+			    /warty/point_cloud_cache/renderers/full_map
+				nav_msgs/OccupancyGrid 
+				2d occup map
+
+	/.../map_c  pub full_map_compressed
+		pkg/node: zip/map_zip, src/mapping/zip
+
+	/warty/point_cloud_pipeline/point_cloud_pipeline
+		pub grid_map_msgs/GridMap /warty/map/global
+		3d occup map
+		
+
+/spot/odometry:
+
+posegraph: 
+	no rviz display. just an array of pose.
 
 ----------------FAQ trouble shooting ------------
 dve_dataset branch build issue in docker:

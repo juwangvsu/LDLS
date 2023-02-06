@@ -3,6 +3,8 @@
 	newamdpc
 
 --------------- 11/21/22 venkat/brain ldls docker image ----------------------
+2/6/23 retest ok
+arldell, /dev/nvme0n1p16 dockerimg, ldls:latest image id: d71c5a8a0dc6
 ~/Documents/venk/ldls_docker_bag/
 	ldls.docker.image
 	run_docker.sh
