@@ -4,7 +4,20 @@
 
 --------------- 11/21/22 venkat/brain ldls docker image ----------------------
 2/6/23 retest ok
-arldell, /dev/nvme0n1p16 dockerimg, ldls:latest image id: d71c5a8a0dc6
+arldell, /dev/nvme0n1p9 cuda 11.4 need upgrade, 
+	/dev/nvme0n1p16= dockerimg, ldls:latest 
+	image id: d71c5a8a0dc6, docker image some local change/commit
+		/dev/nvme0n1p16 was ub with 11.7, but was wiped and burn as dockerimg
+hptitan, /dev/sdb3 , 
+	/dev/sdb1=dockerimg, ldls:latest image id: xxxxd742, orig image? cuda need
+	upgrade to 11.7
+	due to: Error 804: forward compatibility was attempted on non supported HW
+	2/21/23: sdb3 crashed, 
+		sdc1 ok with cuda 11.7, backup 2tb ssd external
+cuda upgrade afterward:
+    affect docker:
+        sudo apt-get install -y nvidia-docker2
+
 ~/Documents/venk/ldls_docker_bag/
 	ldls.docker.image
 	run_docker.sh

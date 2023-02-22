@@ -2,12 +2,64 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
+--------------2/14/23 odom observation etc-----------------------------------
+test code:
+	tf_save.py tf_sobek_odom_base.txt tf_hathor_odom_base.txt
+	traj_save.py traj_hathor.txt
+	posegraph_save.py posegraph_hathor.txt
+odom topic
+   /sobek/jackal_velo...controller/odom: wheel-odom by jackal driver node
+   /sobek/odom:   puber: arl_robot_odometry node, fuse with imu orientation
+   /sobek/pose_graph:      each node x/y/z is relative move from last node, puber: omnigraph
+   /sobek/omnigraph/trajectory: puber: omnigraph
+                           accumulative xyz in odom frame, corrected. comparable
+                           to /sobek/odom, which is xyz based on imu + wheel-odom
+                           the wheel-odom is /sobek/jackal_velo...controller/odom
+
+roslaunch mylaunch_gravel.launch 
+tf missing hathor/base to other links, possible urdf file error?
+this cause the robot_model in rviz to only have a box.
+The robot model move smoothly in rviz, this data is from tf.
+
+bag5 (sobek) tf tree is good.
+
+gravel bag (hathor) tf_static not good, missing from base to imu_link tf chain,
+	this cause arl_robot_odometry to not being able to get iq0 and end up
+	publish a bad tf odom->base, 
+	see 2/14/23 readme_omnigraph
+
+-----------------2/7/23 jackal bag full stack ---------------
+arl_aws/jackal_2021/gravel-path-1_2021-04-07-14-46-00.bag
+
+	rosrun phoenix_bag_launch generate_bag_args /media/student/data11/arl_aws/jackal_2021/gravel-path-1_2021-04-07-14-46-00.bag -o mylaunch_gravel.launch
+
+	cp mylaunch_gravel.rviz /media/student/data55/phoenix-mri-master/phoenix-r1/docker-build/install/share/phoenix_bag_launch/rviz/hathor.rviz
+
+	roslaunch mylaunch_gravel.launch
+
+-----------------2/1/23 rerun filtered bag5 full stack ---------------
+(1) filter bag file:
+	rosbag_filter.sh
+                the bag filtered to only contain sobek data
+(2) @docker:
+	rosrun phoenix_bag_launch generate_bag_args /media/student/data10/arl_aws/bag5_filter.bag -o mylaunch_bag5.launch
+(3) create mylaunch_playbag_bag5.launch
+	copy the rosbag play part from mylaunch.launch
+(4) edit mylaunch_bag5.launch (remove the rosbag play part)
+	modify rviz part 
+(5) test run:	
+        roslaunch mylaunch.launch
+        roslaunch mylaunch_playbag.launch
+
+potential missing files:
+	./share/hardware_launch/calibration/sobek.yaml
+	./share/hardware_launch/config/sobek.yaml
 -------------------1/30/23 bag5 playback visualize --------------
 rosbag play bag5.bag
 @docker rviz, load bag5.rviz
 @docker rosrun zip map_zip decompress /sobek/point_cloud_cache/renderers/full_map
 
---------------------1/30/23 re-run bag5.bag to full stack---------
+--------------------1/30/23 rerun bag5.bag to full stack---------
 https://gitlab.sitcore.net/aimm/phoenix-r1/-/wikis/TechnicalNotes/Running-Bags
 see 9/22/22 readme_info
 arl_aws bag5.bag only contain sensor data and tf,
