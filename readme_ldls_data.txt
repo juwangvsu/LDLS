@@ -1,6 +1,10 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+--------2/28/23 ldls hptitan retest -------------------
+
+retest ok, with python-pcl (local build)
+
 ---------1/4/22 sensor caliberation notes from phoenix --------------------
 https://gitlab.sitcore.net/aimm/phoenix-r1/-/blob/master/src/sensors/calibration/msg-cal/msg_cal/tutorial/README.md
 https://gitlab.sitcore.net/aimm/phoenix-r1/-/wikis/Tutorials/Multi-Sensor-Calibration

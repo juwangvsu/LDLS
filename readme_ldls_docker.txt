@@ -4,6 +4,7 @@
 
 --------------- 2/28/23 venkat/brain new ldls docker image ----------------------
 hptitan ldls_docker_bag/ldls_noconda_docker.img
+	/dev/sda4 dockerimg 400gb
 onedrive, no conda, 59gb
 --------------- 11/21/22 venkat/brain ldls docker image ----------------------
 2/6/23 retest ok
