@@ -19,7 +19,6 @@ import scipy
 
 import time
 
-
 NO_LABEL=-1
 
 class LidarSegmentationResult(object):
@@ -73,6 +72,7 @@ class LidarSegmentationResult(object):
                        in_camera_view=npzfile["in_camera_view"],
                        initial_labels=npzfile["initial_labels"])
         return results
+
 
     def to_file(self, filename):
         """
@@ -590,6 +590,7 @@ class LidarSegmentation(object):
 
         print('run finish used gpu mem: ', mempool.used_bytes())
         print('tt ', mempool.total_bytes())
+        print('\n\nRun lidar points: ', len(lidar))
         return LidarSegmentationResult(points=lidar, projected=projected,
                                        in_camera_view=in_view,
                                        label_likelihoods=all_label_likelihoods,

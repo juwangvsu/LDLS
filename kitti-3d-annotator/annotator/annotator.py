@@ -26,6 +26,7 @@ class Annotator(object):
         pc = kitti_utils.load_kitti_lidar_data(filepath,
                                                load_reflectance=False)
         self.points = pc
+        print(pc)
         self.viewer = pptk.viewer(pc)
         self.viewer.set(floor_level=kitti_utils.KITTI_GROUND_LEVEL)
         self.viewer.set(point_size=0.01)
@@ -50,6 +51,7 @@ class Annotator(object):
         labels = kitti_utils.load_kitti_labels(self.labels_path / ("%06d.txt" % frame_num))
         self.proj = kitti_utils.KittiProjection.load_file(self.calib_path / ("%06d.txt" % frame_num))
         self.points = pc
+        print(pc)
         self.bbox_labels = labels
         self.viewer = pptk.viewer(pc)
         self.viewer.set(floor_level=kitti_utils.KITTI_GROUND_LEVEL)

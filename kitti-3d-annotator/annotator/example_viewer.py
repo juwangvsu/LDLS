@@ -9,6 +9,7 @@ class ExampleViewer(Annotator):
         self.load_data1(filepath)
     def view(self, frame_num):
         self.load_data(frame_num)
+        print("loading...")
         load_file_path = self.save_path / ("%06d.txt" % self.frame_num)
         with open(load_file_path, "r") as readfile:
             lines = readfile.readlines()

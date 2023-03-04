@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#print('usage: python demo.py apgdata 001145')
+#print('usage: python demo.py kitti_object/training 000049')
 import numpy as np
 from pathlib import Path
 import skimage
@@ -7,6 +9,7 @@ from lidar_segmentation.detections import MaskRCNNDetections
 from lidar_segmentation.segmentation import LidarSegmentation
 from lidar_segmentation.kitti_utils import load_kitti_lidar_data, load_kitti_object_calib
 from lidar_segmentation.utils import load_image
+from lidar_segmentation.evaluation import LidarSegmentationGroundTruth, plot_range_vs_accuracy
 from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
 import time
@@ -43,6 +46,7 @@ if arglen>2:
 calib_path = Path("data/") / fnprefix / "calib" / (fnprefix2+".txt")
 image_path = Path("data/") / fnprefix / "image_2" / (fnprefix2+".png")
 lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin")
+gt_seg_path = Path("data/") / fnprefix / "gt_segmentation" / (fnprefix2+".txt")
 
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
@@ -57,7 +61,8 @@ print(type(image), image.shape)
 lidar = load_kitti_lidar_data(lidar_path, load_reflectance=False)
 print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 
-
+lidar_seg_gt = LidarSegmentationGroundTruth.load_file(gt_seg_path)
+print("Loaded lidar seg gt ", len(lidar_seg_gt.class_labels))
 # # Run Mask-RCNN detector on image
 # 
 # The first step in the LDLS pipeline is to run Mask-RCNN on the input image to generate 2D segmentation masks. The following code block runs Mask-RCNN and visualizes results on the input image.
@@ -71,7 +76,7 @@ t0=time.time()
 for n in range(2):
   detections = detector.detect(image)
 print(" mask rcnn dt = %0.3f ms"%((time.time()-t0)*1000.0/n) )
-
+print("mrcnn detection results: ", detections.shape, detections.class_ids,detections.class_names, detections.scores)
 print('\n\n\n******** detection done****************\n\n\n')
 detections.visualize(image)
 
@@ -90,15 +95,22 @@ lidarseg = LidarSegmentation(projection)
 # If set to true, returns label diffusion results at each iteration in the results
 # This is useful for analysis or visualizing the diffusion, but slow.
 
+print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
+print("lid seg results: #points: ", len(results.points))
 t0=time.time()
 for n in range(2):
   results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
 print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
+lidar_seg_gt_fromresults = LidarSegmentationGroundTruth(results.instance_labels(),None, results.class_labels())
+lidar_seg_gt_fromresults.to_file("/tmp/mygt.txt")
 
+lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
+lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
 print('\n\n\n******** lidarseg.run done****************\n\n\n')
-
+print('\n\n\n******** plot accuracy ****************\n\n\n')
+plot_range_vs_accuracy([results], [lidar_seg_gt])
 
 #get_ipython().run_line_magic('timeit', 'lidarseg.run(lidar, detections, max_iters=50, save_all=False)')
 

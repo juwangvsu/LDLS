@@ -27,14 +27,24 @@ class LidarSegmentationGroundTruth(object):
     
     """
 
-    def __init__(self, instance_labels, class_labels):
+    def __init__(self, instance_labels, class_labels, class_ids=None):
         self.instance_labels = np.array(instance_labels)
         self.class_labels = np.array(class_labels)
+        self.class_ids=class_ids
 
     def filter(self, filter_array):
         self.instance_labels = self.instance_labels[filter_array]
         self.class_labels = self.class_labels[filter_array]
 
+    def to_file(self, filename):
+        #assume class_ids not None, override existing class_labels
+        if self.class_ids is None:
+            print("should not be the case, class_ids should not be None")
+        self.class_labels = np.array([CLASS_NAMES[i] for i in self.class_ids])
+        with open(filename, "w") as savefile:
+            for point_inst, point_class in zip (self.instance_labels, self.class_labels):
+                line = str(point_inst)+" "+str(point_class)+"\n"
+                savefile.write(line)
     @classmethod
     def load_file(cls, filename):
         """
@@ -559,11 +569,16 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
         #                             axis=1)
         # Get object class labels (not instance labels)
         results_class_ids = results.class_labels()
+        print("results_class_ids ", results_class_ids)
         results_class_labels = np.array([CLASS_NAMES[i] for i in results_class_ids])
+        print("results_class_labels ", results_class_labels)
         gt_class_labels = gt.class_labels
+        print("gt_class_labels ", gt_class_labels)
 
         results_instance_labels = results.instance_labels()
+        print("results_instance_labels ", results_instance_labels)
         gt_instance_labels = gt.instance_labels
+        print("gt_instance_labels ", gt_instance_labels)
 
         # Find indices of lidar points that are in "DontCare" regions
         # all_dont_care = get_dont_care_indices(gt)
@@ -595,8 +610,10 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
             gt_class_labels = gt_class_labels[not_ground]
             gt_instance_labels = gt_instance_labels[not_ground]
             ranges = ranges[not_ground]
+            print(len(ranges), len(gt_instance_labels))
 
         # Calculate mean range to each ground truth instance
+        print(gt.n_instances, gt_instance_labels, len(ranges), len(gt_instance_labels))
         instance_ranges = [np.mean(ranges[gt_instance_labels == i]) for i in
                            range(1, gt.n_instances)]
 
@@ -617,7 +634,7 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
 
             n_r = len(r_instances)
             n_g = len(g_instances)
-
+            print(coco_class, kitti_class," instance r/g : ", r_instances, g_instances)
             # Create IoU matrix
             # Is n by m, where n is the number of object instances in the segmentation results,
             # and m is the number of instances in the ground truth
