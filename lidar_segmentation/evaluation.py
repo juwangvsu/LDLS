@@ -626,7 +626,8 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
 
             # account for KITTI or COCO class labels
             r_is_class = np.logical_or(results_class_labels == coco_class, results_class_labels == kitti_class)
-            g_is_class = gt_class_labels == kitti_class
+            g_is_class = np.logical_or(gt_class_labels == coco_class, gt_class_labels == kitti_class)
+            #g_is_class = gt_class_labels == kitti_class
 
             # Find instances of this class, in results and in ground truth
             r_instances = np.unique(results_instance_labels[r_is_class])

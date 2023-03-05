@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#print('usage: python demo.py apgdata 001145')
+#print('usage: python demo.py --datapath apgdata --id 001145 --gen_gt --true_gt')
 #print('usage: python demo.py kitti_object/training 000049')
 import numpy as np
 from pathlib import Path
@@ -14,7 +14,7 @@ from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
 import time
 import sys
-
+import argparse
 # # Load input data
 # 
 # Load the following files:
@@ -32,12 +32,29 @@ usepcl = True # True #change to false if pcl error and use the plotly display
 print('usage: python demo.py apgdata 001145')
 fnprefix= "_out"
 fnprefix2= "00000262"
+
+parser = argparse.ArgumentParser(
+        description='demo lidar seg.')
+parser.add_argument('--datapath', required=False,
+                        default='kitti_demo',
+                        metavar="/path/to/logs/")
+parser.add_argument('--id', required=False,
+                        default='kitti_demo',
+                        metavar="/path/to/logs/")
+parser.add_argument('--gen_gt', action='store_true') #default false
+parser.add_argument('--true_gt', action='store_false')
+
+args = parser.parse_args()
+fnprefix = args.datapath
+fnprefix2 = args.id
+gen_gt = args.gen_gt
+true_gt = args.true_gt
 arglen=len(sys.argv)
 print(sys.argv)
-if arglen>1:
-    fnprefix = sys.argv[1]
-if arglen>2:
-    fnprefix2 = sys.argv[2]
+#if arglen>1:
+#    fnprefix = sys.argv[1]
+#if arglen>2:
+#    fnprefix2 = sys.argv[2]
 # Define file paths
 #calib_path = Path("data/") / "kitti_demo" / "calib" / "000571.txt"
 #image_path = Path("data/") / "kitti_demo" / "image_2" / "000571.png"
@@ -102,15 +119,19 @@ for n in range(2):
 print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
 lidar_seg_gt_fromresults = LidarSegmentationGroundTruth(results.instance_labels(),None, results.class_labels())
-lidar_seg_gt_fromresults.to_file(gt_seg_path)
+
+if gen_gt: #default False
+    lidar_seg_gt_fromresults.to_file(gt_seg_path)
 
 #debugging hack: if have true gt or not
-true_gt = False
-if true_gt:
+if true_gt: #default True
     lidar_seg_gt = LidarSegmentationGroundTruth.load_file(gt_seg_path)
     print("Loaded lidar seg gt ", len(lidar_seg_gt.class_labels))
-    lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
-    lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
+    if len(lidar_seg_gt.class_labels) == len(results.in_camera_view):
+        # the gt have the full lidar points, only pick the set that is visiable
+        # the points in results already filtered with i_camera_view
+        lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
+        lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
     print('\n\n\n******** lidarseg.run done****************\n\n\n')
     print('\n\n\n******** plot accuracy ****************\n\n\n')
     plot_range_vs_accuracy([results], [lidar_seg_gt])
