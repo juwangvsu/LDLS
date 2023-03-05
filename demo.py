@@ -61,8 +61,6 @@ print(type(image), image.shape)
 lidar = load_kitti_lidar_data(lidar_path, load_reflectance=False)
 print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 
-lidar_seg_gt = LidarSegmentationGroundTruth.load_file(gt_seg_path)
-print("Loaded lidar seg gt ", len(lidar_seg_gt.class_labels))
 # # Run Mask-RCNN detector on image
 # 
 # The first step in the LDLS pipeline is to run Mask-RCNN on the input image to generate 2D segmentation masks. The following code block runs Mask-RCNN and visualizes results on the input image.
@@ -104,13 +102,18 @@ for n in range(2):
 print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
 lidar_seg_gt_fromresults = LidarSegmentationGroundTruth(results.instance_labels(),None, results.class_labels())
-lidar_seg_gt_fromresults.to_file("/tmp/mygt.txt")
+lidar_seg_gt_fromresults.to_file(gt_seg_path)
 
-lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
-lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
-print('\n\n\n******** lidarseg.run done****************\n\n\n')
-print('\n\n\n******** plot accuracy ****************\n\n\n')
-plot_range_vs_accuracy([results], [lidar_seg_gt])
+#debugging hack: if have true gt or not
+true_gt = False
+if true_gt:
+    lidar_seg_gt = LidarSegmentationGroundTruth.load_file(gt_seg_path)
+    print("Loaded lidar seg gt ", len(lidar_seg_gt.class_labels))
+    lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
+    lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
+    print('\n\n\n******** lidarseg.run done****************\n\n\n')
+    print('\n\n\n******** plot accuracy ****************\n\n\n')
+    plot_range_vs_accuracy([results], [lidar_seg_gt])
 
 #get_ipython().run_line_magic('timeit', 'lidarseg.run(lidar, detections, max_iters=50, save_all=False)')
 
