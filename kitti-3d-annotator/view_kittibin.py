@@ -3,7 +3,6 @@ from annotator.example_viewer import ExampleViewer
 from skimage.io import imread, imshow
 from pathlib import Path
 
-#if __name__ == "__main__":
 def main():
     # image_path = parser['image_path']
     # if image_path is not None:
@@ -15,3 +14,6 @@ def main():
     binfilepath = input("Input bin filepath: ")
     viewer = ExampleViewer()
     viewer.view1(binfilepath)
+
+if __name__ == "__main__":
+    main()
