@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#print('usage: python demo.py --datapath apgdata --id 001145 --gen_gt --true_gt')
+#print('usage: python demo.py --datapath apgsample --id 001145 --gen_gt --true_gt')
 #print('usage: python demo.py kitti_object/training 000049')
 import numpy as np
 from pathlib import Path
@@ -8,7 +8,7 @@ import skimage
 from lidar_segmentation.detections import MaskRCNNDetections
 from lidar_segmentation.segmentation import LidarSegmentation
 from lidar_segmentation.kitti_utils import load_kitti_lidar_data, load_kitti_object_calib
-from lidar_segmentation.utils import load_image
+from lidar_segmentation.utils import load_image, expand_nparray
 from lidar_segmentation.evaluation import LidarSegmentationGroundTruth, plot_range_vs_accuracy
 from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
@@ -118,7 +118,10 @@ for n in range(2):
   results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
 print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
-lidar_seg_gt_fromresults = LidarSegmentationGroundTruth(results.instance_labels(),None, results.class_labels())
+instance_labels_full = expand_nparray(results.instance_labels(), results.in_camera_view)
+class_labels_full = expand_nparray(results.class_labels(), results.in_camera_view)
+
+lidar_seg_gt_fromresults = LidarSegmentationGroundTruth(instance_labels_full,None, class_labels_full)
 
 if gen_gt: #default False
     lidar_seg_gt_fromresults.to_file(gt_seg_path)
