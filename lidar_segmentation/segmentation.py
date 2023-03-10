@@ -16,11 +16,39 @@ import numba
 import cupy as cp
 
 import scipy
-
+import csv
 import time
-
+from PIL import Image
 NO_LABEL=-1
-
+imgcnt=0
+def save_projected(projected, lidar):
+    global imgcnt
+    fd = open("pts.txt", 'w')
+    write = csv.writer(fd)
+    projected=projected.astype('int64')
+    im0=np.zeros((800,800,3)).astype('uint8')
+    
+    for i in range(projected.shape[0]):
+        u = projected[i,0]
+        v = projected[i,1]
+        if lidar[i,2]<0.3:
+            continue #skip ground points
+        if np.isnan(u) or np.isnan(v):
+            continue
+        if v>=800 or v<0:
+            continue
+        if u>=800 or u<0:
+            continue
+        write.writerow([u,v])
+        im0[v,u,0]=255
+        im0[v,u,1]=250
+    fd.close()
+    #print('projected: ', projected.shape, projected, im0)
+    im = Image.fromarray(im0)
+    imim2=im.convert('RGBA')
+    imim2.save("project_"+str(imgcnt)+".png")
+    imim2.show()
+    imgcnt = imgcnt+1
 class LidarSegmentationResult(object):
     """
     Output from lidar segmentation
@@ -351,10 +379,14 @@ class LidarSegmentation(object):
                                     projected[:, 1] < img_rows - 1)
 
         projected_in_frame = np.logical_and(in_frame_x, in_frame_y)
+        print('in_frame x # : ', np.sum(in_frame_x))
+        print('in_frame y # : ', np.sum(in_frame_y))
+        print('in_view proj# : ', np.sum(projected_in_frame))
         # Lidar point is in view if in front of camera (x>0) *and* projects
         # to inside the image
         in_view = np.logical_and(lidar[:, 0] > 0, projected_in_frame)
         # Check which lidar points project to within the image bounds
+        print('in_view # : ', np.sum(in_view))
         return in_view
 
     def create_graph(self, lidar, projected, n_rows, n_cols):
@@ -517,6 +549,7 @@ class LidarSegmentation(object):
             start_time = time.time()
             # Project lidar into 2D
             projected = self.project_points(lidar)
+            save_projected(projected,lidar)
             n_rows = detections.masks.shape[0]
             n_cols = detections.masks.shape[1]
             n_pixels = n_rows * n_cols

@@ -1,6 +1,64 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+-------3/9/23 quaternion euler angles TR matrix -----------------
+
+raw data: kitti_object/calib/
+test code: test_quaternion.py
+
+Given two frames: cam frame F_cam, lidar frame F_lidar, 
+	TR_lidar_to_cam is the 3x4 matrix that do "lidar frame to cam frame"
+	pt_lidar in F_lidar, pt_cam the same point in F_cam,
+		pt_cam = TR_lidar_to_cam * pt_lidar
+
+	q_kitti is the rotation part:
+		m_kitti = TR_lidar_to_cam[:3,:3]
+		q_kitti = quaternion.from_rotation_matrix
+			quaternion(-0.50573, -0.49799, 0.4945671, -0.50163)
+		ea_kitti = quaternion.as_euler_angles(q_kitti)
+			array([-1.571413  ,  1.55598824, -3.14911734])
+		ea_kitti_rostf
+			(1.57588, -1.56170, -0.001822)
+			in ros tf, the equiv euler angle as ea_kitti, they 
+			look different, but are the same.
+
+	rotation can be interpreted in two ways:
+	
+  		(1) convert F_cam to F_lidar, so the F_cam's xyz axis will become F_lidar's axis.
+		the euler angle is ea_kitti (alpha, beta, gamma) z-y'-z'', 
+	 	each time rotation will be applied to the new intermediate frame	
+  		so original F_cam is xyz, the it become x'y'z', then x''y''z''
+		final result is x'''y'''z'''
+		rotating sequence: first apply alpha on z, 
+		then apply beta in y', then apply
+		gamma in z''.
+		(1).a the equiv ea_kitti_rostf only need two rotations:
+			z- alpha 90, then y' beta -90. 
+
+		(2) convert a point coord from one frame to another frame:
+		in F_lidar frame, apply the euler angles to a point pt_lidar 
+		this result in a new point in F_lidar, the new point's coor in
+		F_lidar is the same as the original point pt_lidar's coor in
+		F_cam, or pt_cam. 
+		ea_kitti [-90, 90, -180] rotation applied to a point in the 
+		fixed F_lidar frame. in the order of
+		rot sequence: z- gamma -180,then y- beta 90,then z- alpha -90
+			ex: quaternion.rotate_vectors(q_kitti,[0,0,1])
+				# pt_lidar [0,0,1]-> pt_cam [0,-1,0]
+				  pt_lidar [0,1,0]-> pt_cam [-1,0,0]
+				  pt_lidar [1,0,0]-> pt_cam [0,0,1]
+			a quick way to visually verify is to example the two
+			frame in sensor_setup_topview.png: [0,0,1] in lidar
+			frame will be [0,-1,0] in cam frame etc.
+more note:
+	quat format in numpy-quaternion is (w,x,y,z)
+	euler angle in numpy-quaternion convention is 'rzyz' and fixed 
+
+	quat in tf2.transformations.quaternion is (x,y,z,w)
+	euler angle in ros tf can specify 24 different rotation sequence
+	
+	ea_kitti_rostf = tf.transformations.euler_from_quaternion(q_kitti_rostf,'rzyz')
+
 --------2/28/23 ldls hptitan retest -------------------
 
 retest ok, with python-pcl (local build)
@@ -49,7 +107,7 @@ see same file in LDLS repo
 add kitti 3d annotator
 https://github.com/brian-h-wang/kitti-3d-annotator.git
 
------------11/29, 12/15/22 [R2 | T2] in calib file------------------------------------------
+-----------11/29, 12/15/22 [R2 | T2] in calib file-----------------------------
 point cloud2:
 point cloud2:
 	/husky6/full_cloud don't use. not sure what this is
@@ -79,6 +137,12 @@ array([[ 0.00775545, -0.9999694 , -0.0010143 , -0.00727554],
        [ 0.00229406,  0.00103212, -0.9999968 , -0.06324057],
        [ 0.9999673 ,  0.0077531 ,  0.00230199, -0.2670414 ]])
 the T = [0, -.063, -.267] meter, in cam frame, this is in agree with the sensor setup. i.e., lidar is 0.267 meter behind the camera, but camera z-axis car's x-axis (length)
+
+T is the position of the lidar in cam frame,
+The R part is the rotation matrix, the equivlent euler angles if applied to cam axis will become lidar axis?
+
+   point_cam = [R|T] * point_lidar 
+	this matrix multiply the point in lidaar frame is the point in camera frame 
 
 R0_rect rectify cam frame, not used in LDLS code, impact limited
 	Y = P_rect_xx * R_rect_00 * (R|T)_velo_to_cam * X
@@ -176,5 +240,11 @@ to run:
 husky6/forward_color_optical_frame
 
 -----------trouble shooting FAQ ----------------------
+quaternion pkg issue:
+	ros tf2 have quaternion funcs
+	numpy-quaternion works on python 3
+	ros tf2 can't be used in py3 env (miniconda)
+	see phoenix note readme
+
 expect dtype get ... numpy error
 	cause: numpy version too high, use 1.19.4

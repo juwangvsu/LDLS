@@ -7,6 +7,7 @@
 # --range  +- from the gt calib param
 # --steps number of dithering data point in each selected parameter
 import numpy as np
+import quaternion # pip install numpy-quaternion
 from pathlib import Path
 import skimage
 
@@ -16,6 +17,7 @@ from lidar_segmentation.kitti_utils import load_kitti_lidar_data, load_kitti_obj
 from lidar_segmentation.utils import load_image, expand_nparray
 from lidar_segmentation.evaluation import LidarSegmentationGroundTruth, plot_range_vs_accuracy
 from mask_rcnn.mask_rcnn import MaskRCNNDetector
+from lidar_segmentation.plotting import plot_segmentation_result
 
 import time
 import sys
@@ -60,6 +62,10 @@ parser.add_argument('--true_gt', action='store_false') #default false
 parser.add_argument('--x', action='store_true') #default false
 parser.add_argument('--y', action='store_true') #default false
 parser.add_argument('--z', action='store_true') #default false
+parser.add_argument('--xr', action='store_true') #default false x rotation
+parser.add_argument('--yr', action='store_true') #default false y rotation
+parser.add_argument('--zr', action='store_true') #default false z rotation
+parser.add_argument('--pra', action='store_true') #default false, plot range acc
 
 args = parser.parse_args()
 fnprefix = args.datapath
@@ -125,14 +131,27 @@ print('\n\n\n******** visualize done****************\n\n\n')
 # Next, perform 3D segmentation using a LidarSegmentation object. The LidarSegmentation.run() method takes as inputs a LiDAR point cloud, Mask-RCNN detections, and a maximum number of iterations parameter.
 steps=int (args.steps)
 d_range=float(args.d_range)
+tf_mat = np.array(projection.transformation_matrix)
 for i in range(steps):
     result_seg_path = Path("data/") / fnprefix / "result_segmentation" / (fnprefix2+"_"+str(i)+".txt")
-    delta = d_range/steps * i - d_range/2
-    print('calib transformation matrix: ', projection.transformation_matrix)
+    delta = (d_range/steps) * i - d_range/2
+    print('calib transformation matrix: ', tf_mat)
     if args.x:
-        projection.transformation_matrix[0,3] = projection.transformation_matrix[0,3] + delta
-    print('calib transformation matrix: ', projection.transformation_matrix)
-    print("delta in x/y/z axis is: ", delta)
+        projection.transformation_matrix[0,3] = tf_mat[0,3] + delta
+    if args.xr:
+        m1 = tf_mat[:3,:3]
+        q1=quaternion.from_rotation_matrix(m1)
+        v1=quaternion.as_rotation_vector(q1)
+        rd_vec = np.array([0,0, delta])
+        v2 = v1 + rd_vec
+        q2=quaternion.from_rotation_vector(v2)
+        v2_recal=quaternion.as_rotation_vector(q2)
+        m2=quaternion.as_rotation_matrix(q2)
+        projection.transformation_matrix[:3,:3] = m2
+        # m1=quaternion.as_rotation_vector (q1)
+        # quaternion.as_rotation_matrix(q4)
+    print('calib transformation  d, m: ', delta, projection.transformation_matrix)
+    print("delta v1, v2, v2_recal: ", delta, v1, v2,v2_recal)
     lidarseg = LidarSegmentation(projection)
 # Be sure to set save_all=False when running segmentation
 # If set to true, returns label diffusion results at each iteration in the results
@@ -141,10 +160,6 @@ for i in range(steps):
     print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
     results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
     print("lid seg results: #points: ", len(results.points))
-    t0=time.time()
-    for n in range(2):
-        results = lidarseg.run(lidar, detections, max_iters=50, save_all=False)
-    print(" lidarseg dt =%0.3f ms"%((time.time()-t0)*1000.0/n) )
 
     instance_labels_full = expand_nparray(results.instance_labels(), results.in_camera_view)
     class_labels_full = expand_nparray(results.class_labels(), results.in_camera_view)
@@ -163,33 +178,32 @@ for i in range(steps):
         # the points in results already filtered with i_camera_view
             lidar_seg_gt.class_labels=lidar_seg_gt.class_labels[results.in_camera_view]
             lidar_seg_gt.instance_labels=lidar_seg_gt.instance_labels[results.in_camera_view]
-        print('\n\n\n******** lidarseg.run done****************\n\n\n')
-        print('\n\n\n******** plot accuracy ****************\n\n\n')
-        plot_range_vs_accuracy([results], [lidar_seg_gt])
+        print('\n******** lidarseg.run done****************\n')
+        print('\n******** plot accuracy ****************\n')
+        plot_range_vs_accuracy([results], [lidar_seg_gt], pra=args.pra)
 
 #get_ipython().run_line_magic('timeit', 'lidarseg.run(lidar, detections, max_iters=50, save_all=False)')
 
 
 # Plot the resulting labeled pointcloud using [Plotly](https://plot.ly/). You can visualize the results with points colored according to class labels (Person, Car, ...), or instance labels (Person 1, Person 2, Car 1, ...).
 
-from lidar_segmentation.plotting import plot_segmentation_result
 
 # Show points colored by class label
-if usepcl:
-    import visualization
-    print('results.points: ', results.points.shape, results.points[1])
+    if usepcl:
+        import visualization
+        print('results.points: ', results.points.shape, results.points[1])
 #    print('labels: ', results.class_labels())
-    visualization.save_labels(results.class_labels()*300 + 50)
-    visualization.displaylidar(results.points, 'ldls seg result', results.class_labels())
+        visualization.save_labels(results.class_labels()*300 + 50)
+        visualization.displaylidar(results.points, 'ldls seg result', results.class_labels())
    # visualization.displaylidar(lidar, 'ldls lidar')
 #    visualization.visualization_test()
-else:
-    print('labels: ', results.class_labels())
-    plot_segmentation_result(results, label_type='class')
+    else:
+        print('labels: ', results.class_labels())
+        plot_segmentation_result(results, label_type='class')
 # Show points colored by instance label
-    plot_segmentation_result(results, label_type='instance')
+        plot_segmentation_result(results, label_type='instance')
 
-print('\n\n\n******** plot_segmentation_result done****************\n\n\n')
+    print('\n******** plot_segmentation_result done****************\n')
 
 # You can also visualize the label diffusion over time. This requires running the lidar segmentation with the `save_all` parameter set to `true` (note that this is significantly slower due to saving the full diffusion results in an array).
 # 

@@ -128,6 +128,6 @@ def load_csv_lidar_data(lidar_path):
 def expand_nparray(instance_labels, in_camera_view):
     new_instance_labels = np.zeros((in_camera_view.shape[0],), dtype=instance_labels.dtype)
     new_instance_labels[in_camera_view]=instance_labels
-    print('expand array ', new_instance_labels, new_instance_labels.shape, instance_labels.shape, in_camera_view.shape)
+    #print('expand array ', new_instance_labels, new_instance_labels.shape, instance_labels.shape, in_camera_view.shape)
     return new_instance_labels
 

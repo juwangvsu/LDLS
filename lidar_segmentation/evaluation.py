@@ -518,7 +518,7 @@ def calculate_precision_recall(tp_totals, fp_totals, fn_totals):
 
 
 def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=True,
-                           savefile=None):
+                           savefile=None, pra=False):
     """
     Evaluate labeling result as instance segmentation
 
@@ -687,7 +687,8 @@ def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=T
     plt.xlabel("Range to object centroid [m]")
     plt.ylabel("IoU")
     plt.savefig("range_scatter.eps", bbox_inches='tight')
-    plt.show()
+    if pra:
+        plt.show()
 
 
 def find_tp_fp_fn(results, gt, kitti_names, coco_names, iou_threshold=0.5,

@@ -8,6 +8,7 @@ import time
 import pcl.pcl_visualization
 import pandas as pd
 import open3d as o3d
+from lidar_segmentation.utils import CLASS_NAMES
 # from pcl.pcl_registration import icp, gicp, icp_nl
 visual=None
 
@@ -47,11 +48,13 @@ def displaylidar(lidar, title, class_labels=None, mode='xyzrgb', blocking=False)
     print('display lidar from LDLS format, class labels', type(lidar), lidar.shape, class_labels)
     cloud = pcl._pcl.PointCloud_PointXYZRGB()
     lidar = numpy.pad(lidar, ((0,0),(0,1)), mode='constant', constant_values=1)
+    class_labels_str = np.array([CLASS_NAMES[i] for i in range(6)])
+    print('classes 0,1...5 names: ', class_labels_str)
     print('classes 0, 1, 2, 3, 4, 5 points: ', sum(class_labels==0), sum(class_labels==1), sum(class_labels==2), sum(class_labels==3), sum(class_labels==4),sum(class_labels==5))
     class_labels[class_labels==0]=100
     class_labels[class_labels==1]=(200<<8) +150
     class_labels[class_labels==2]=200<<16
-    class_labels[class_labels==3]=(200<<16)+(100<<8)
+    class_labels[class_labels==3]=(200<<16)+(200<<8)
     lidar[:,-1]=class_labels
     cloud.from_array(lidar)
 
