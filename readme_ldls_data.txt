@@ -1,6 +1,11 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+-------3/20/23 demo_param -----------------
+sweeping x/y/z 
+ usage angle dithering: python demo_param_sen.py --datapath apgsample --id 001145 --xr --d_range 1 --steps 10 --gen_gt
+#usage: python demo_param_sen.py --datapath apgsample --id 001145 --x --range 1 --steps 10
+
 -------3/9/23 quaternion euler angles TR matrix -----------------
 
 raw data: kitti_object/calib/
@@ -58,6 +63,7 @@ more note:
 	euler angle in ros tf can specify 24 different rotation sequence
 	
 	ea_kitti_rostf = tf.transformations.euler_from_quaternion(q_kitti_rostf,'rzyz')
+	ros tf rpy: roll about an X-axis) / (subsequent pitch about the Y-axis) / (subsequent yaw about the Z-axis),
 
 --------2/28/23 ldls hptitan retest -------------------
 

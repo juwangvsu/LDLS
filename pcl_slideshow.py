@@ -160,6 +160,7 @@ def pcd_worldframe(yamlfn="mappose_6.yaml",pcdfn="mapdata_6.pcd"):
     except yaml.YAMLError as exc:
         print(exc)
 
+#quarternion
 #calculate the 2nd frame's pcd and pose w.r.t the body frame of previous frame 
 # p_w = Rm0 * P_f0 + t0
 # p_w = Rm1 * P_f1 + t1

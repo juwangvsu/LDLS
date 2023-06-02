@@ -21,12 +21,23 @@ import time
 from PIL import Image
 NO_LABEL=-1
 imgcnt=0
+def enhance(u,v,color,im0):
+    for i in range(4):
+        for j in range(4):
+            if (u+j)<800 and (v+i)<800:
+                im0[v+i,u+j,0]=255
+                im0[v+i,u+j,1]=0
+                im0[v+i,u+j,2]=0
+    return im0
 def save_projected(projected, lidar):
     global imgcnt
     fd = open("pts.txt", 'w')
     write = csv.writer(fd)
     projected=projected.astype('int64')
-    im0=np.zeros((800,800,3)).astype('uint8')
+    im0=np.ones((800,800,3)).astype('uint8')
+    im0[:,:,0]=im0[:,:,0]*255
+    im0[:,:,1]=im0[:,:,1]*255
+    im0[:,:,2]=im0[:,:,2]*255
     
     for i in range(projected.shape[0]):
         u = projected[i,0]
@@ -41,12 +52,14 @@ def save_projected(projected, lidar):
             continue
         write.writerow([u,v])
         im0[v,u,0]=255
-        im0[v,u,1]=250
+        im0[v,u,2]=0
+        im0[v,u,1]=0
+        enhance(u,v, 255,im0)
     fd.close()
     #print('projected: ', projected.shape, projected, im0)
     im = Image.fromarray(im0)
-    imim2=im.convert('RGBA')
-    imim2.save("project_"+str(imgcnt)+".png")
+    imim2=im.convert('RGB')
+    imim2.save("projected_"+str(imgcnt)+".png")
     imim2.show()
     imgcnt = imgcnt+1
 class LidarSegmentationResult(object):

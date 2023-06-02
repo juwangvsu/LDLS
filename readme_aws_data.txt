@@ -2,6 +2,23 @@
 phoenix dve_dataset branch
 dve_dataset/src/utils/localized_labeler
 
+-----------------4/7/23 jackal bag pcd dump ---------------
+arl_aws/jackal_2021/icp_pcd_0/
+	pcd files and csv dumpted running mylaunch_gravel
+	all single pcd files are reduced, about 9000 pts
+	lc...pcd
+	rel...pcd
+	*.csv
+
+arl_aws/jackal_2021/output
+	pcd and png extracted from gravel bag file
+		see 12/19/22 note
+	pcd/*.bin
+	png/*.png
+	
+	pcd_sub/*.bin pcd file subsampled to resolution 0.5
+	rosrun point_cloud_icp pcd_subsampler _indir:=pcd _oudir:=pcd_sub
+
 --------------2/14/23 odom observation etc-----------------------------------
 test code:
 	tf_save.py tf_sobek_odom_base.txt tf_hathor_odom_base.txt
@@ -36,6 +53,12 @@ arl_aws/jackal_2021/gravel-path-1_2021-04-07-14-46-00.bag
 	cp mylaunch_gravel.rviz /media/student/data55/phoenix-mri-master/phoenix-r1/docker-build/install/share/phoenix_bag_launch/rviz/hathor.rviz
 
 	roslaunch mylaunch_gravel.launch
+icp dump: 4/31/23
+	bag data start @ 1617821161.26
+	icp dump start @ 1617821177, due to no motion at begin
+		16 second, 
+		traj_recon.csv show non-zero result @ output/pcd/000165.pcd
+		so data consent.
 
 -----------------2/1/23 rerun filtered bag5 full stack ---------------
 (1) filter bag file:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # calib parameter sensitivity evaluation. 
-# first evaluation sensitivity along x/y/z axis
+# first evaluation sensitivity along x/y/z translation, or  xr/yr/zr rot
+# usage angle dithering: python demo_param_sen.py --datapath apgsample --id 001145 --xr --d_range 1 --steps 10 --gen_gt
 #usage: python demo_param_sen.py --datapath apgsample --id 001145 --x --range 1 --steps 10
 # this will assume gt point labels @ gt_segmentation,
 # --x dithering along x axis, similarly --y --z
@@ -138,20 +139,24 @@ for i in range(steps):
     print('calib transformation matrix: ', tf_mat)
     if args.x:
         projection.transformation_matrix[0,3] = tf_mat[0,3] + delta
-    if args.xr:
+    if args.xr or args.yr or args.zr:
         m1 = tf_mat[:3,:3]
         q1=quaternion.from_rotation_matrix(m1)
-        v1=quaternion.as_rotation_vector(q1)
-        rd_vec = np.array([0,0, delta])
-        v2 = v1 + rd_vec
-        q2=quaternion.from_rotation_vector(v2)
-        v2_recal=quaternion.as_rotation_vector(q2)
+        v1=quaternion.as_euler_angles(q1) # alpha, beta, gamma, in z-y-z
+        if args.zr:
+            rd_vec = np.array([0,0, delta]) 
+        if args.yr:
+            rd_vec = np.array([0,delta,0]) 
+        if args.xr:
+            rd_vec = np.array([delta,0,0]) 
+        q2=quaternion.from_rotation_vector(rd_vec) # rot vector NOT same as euler angles
+        v2_recal=quaternion.as_euler_angles(q2)
         m2=quaternion.as_rotation_matrix(q2)
-        projection.transformation_matrix[:3,:3] = m2
+        projection.transformation_matrix[:3,:3] = m2.dot(projection.transformation_matrix[:3,:3]) # apply m2 afterward
+        print("delta , euler angles : v1, v2_recal: ", delta, v1, v2_recal)
         # m1=quaternion.as_rotation_vector (q1)
         # quaternion.as_rotation_matrix(q4)
     print('calib transformation  d, m: ', delta, projection.transformation_matrix)
-    print("delta v1, v2, v2_recal: ", delta, v1, v2,v2_recal)
     lidarseg = LidarSegmentation(projection)
 # Be sure to set save_all=False when running segmentation
 # If set to true, returns label diffusion results at each iteration in the results

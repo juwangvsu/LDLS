@@ -41,7 +41,7 @@ tr_kitti_lidar_to_cam=np.array([[ 7.533745e-03, -9.999714e-01, -6.166020e-04, -4
        [ 1.480249e-02,  7.280733e-04, -9.998902e-01, -7.631618e-02],
        [ 9.998621e-01,  7.523790e-03,  1.480755e-02, -2.717806e-01]])
 m_kitti = tr_kitti_lidar_to_cam[:3,:3]
-q_kitti = quaternion.from_rotation_matrix(rm_kitti)
+q_kitti = quaternion.from_rotation_matrix(m_kitti)
 ea_kitti = quaternion.as_euler_angles(q_kitti)
 ea_alpha=ea_kitti.copy()
 ea_alpha[[0,1]]=0
@@ -50,9 +50,9 @@ ea_beta=ea_kitti.copy()
 ea_beta[[0,2]]=0
 ea_gamma=ea_kitti.copy()
 ea_gamma[[0,1]]=0
-q_alpha=quaternion.from_rotation_vector(ea_alpha)
-q_beta=quaternion.from_rotation_vector(ea_beta)
-q_gamma=quaternion.from_rotation_vector(ea_gamma)
+q_alpha=quaternion.from_euler_angles(ea_alpha)
+q_beta=quaternion.from_euler_angles(ea_beta)
+q_gamma=quaternion.from_euler_angles(ea_gamma)
 m_alpha=quaternion.as_rotation_matrix(q_alpha)
 m_beta=quaternion.as_rotation_matrix(q_beta)
 m_gamma=quaternion.as_rotation_matrix(q_gamma)
@@ -70,7 +70,7 @@ print(" p1->result: [0, 0,1]", xvec_cam)
 
 print("rotaing with m_kitti, p1-> ", m_kitti.dot(p1[:3]))
 print("rotaing with m_kitti, p2-> ", m_kitti.dot(p2[:3]))
-print("rotaing with m_kitti, p3-> ", m_kitti.dot(p3[:3]))a
+print("rotaing with m_kitti, p3-> ", m_kitti.dot(p3[:3]))
 
 m_abg = m_alpha.dot(m_beta).dot(m_gamma) #combine 3 rots, first gamma, then beta, then gamma
 
