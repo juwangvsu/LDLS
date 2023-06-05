@@ -516,7 +516,7 @@ def calculate_precision_recall(tp_totals, fp_totals, fn_totals):
     return precision, recall
 
 
-
+# result in "range_scatter.eps"
 def plot_range_vs_accuracy(results_list, gt_list, filter_ground=False, cp_only=True,
                            savefile=None, pra=False):
     """

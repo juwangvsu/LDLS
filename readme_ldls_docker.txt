@@ -1,7 +1,33 @@
 ----- modify code to not use hdf5 file format for dataset ---
 	arldell
 	newamdpc
+-----------sticky---------------------
+cv2 error:
+	export PYTHONPATH=
 
+--------------6/4/23 retest, demo_movingobj.py ---
+	run two frames, to identify the moving object
+	2nd frame lidar seg result search the same points in first frame,
+	to do such, use match_savedpcd to estimate the relative pose btw the 
+	two frame.
+
+status:
+	gicp pose estimate done:
+	cd data/apgdata
+	rosrun point_cloud_icp match_savedpcds _test_guess:=false _foldmode:=true _subsubmode:=twopcds  _foldpath:=pcd _caseid:=421 _caseid2:=422 _savemode:=true
+
+tasks:
+	python code:
+		run match_savedpcds from python code
+		show the gicp resulting pcd file in python code
+			/var/tmp/rel_0001_reference_to_reference_0-0_fit_*.pcd
+			/var/tmp/rel_csvlog.csv
+		read the T|R from the csv file and transform the 2nd frame to 
+			the 1st frame
+		
+
+--------------6/1/23 retest, demo.py regression test fix---
+follow usage
 --------------- 2/28/23 venkat/brain new ldls docker image ----------------------
 hptitan ldls_docker_bag/ldls_noconda_docker.img
 	/dev/sda4 dockerimg 400gb
@@ -282,6 +308,8 @@ numpy if upgrade to 1.21+ might break numba. use 16.3 or 17.3 if open3d requires
 carla 0.9.13 seems won't run without a gpu
 
 catastrophic error: cannot open source file "cuda_fp16.h"
+	check nvcc
+	check /usr/local/cuda/bin is good
 	add nvcc in PATH, such as:
 		export PATH=/usr/local/cuda/bin:$PATH
 plotly error:

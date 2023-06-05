@@ -44,8 +44,9 @@ def filter_nan(cloud):
 ###############################################################################################
 # display lidar data from LDLS pkg
 # <class 'numpy.ndarray'> lidar.shape (96857, 3)
+# class_labels ndarray shape (n,) 1d np arrat
 def displaylidar(lidar, title, class_labels=None, mode='xyzrgb', blocking=False):
-    print('display lidar from LDLS format, class labels', type(lidar), lidar.shape, class_labels)
+    print('display lidar from LDLS format shape/ dtype, class labels type/shape/value', type(lidar), lidar.shape, lidar.dtype, type(class_labels), class_labels.shape, class_labels)
     cloud = pcl._pcl.PointCloud_PointXYZRGB()
     lidar = numpy.pad(lidar, ((0,0),(0,1)), mode='constant', constant_values=1)
     class_labels_str = np.array([CLASS_NAMES[i] for i in range(6)])
@@ -76,7 +77,7 @@ def displaylidar(lidar, title, class_labels=None, mode='xyzrgb', blocking=False)
     pcd.points = o3d.utility.Vector3dVector(xyzrgb[:,0:3])
     pcd.colors = o3d.utility.Vector3dVector(pcolor_np3)
     o3d.io.write_point_cloud("pcdfile2.pcd", pcd)
-    o3d.visualization.draw_geometries([pcd], zoom=0.0412,
+    o3d.visualization.draw_geometries([pcd], window_name=title, zoom=0.0412,
                                   front=[-0.8757, -0.12125, 0.4795],
                                   lookat=[2.6172, 2.0475, 1.532],
                                   up=[0.4694, -0.219768, 0.84624])
