@@ -211,7 +211,11 @@ cd ~/catkin_ws/src;
 ln -sn /media/student/data6/venk/LDLS/Tools_RosBag2KITTI/catkin_ws/src/obstale_detection
 catkin_make
 
------------------run bag2pcd apgdata----------
+-----------------11/2022 run bag2pcd apgdata----------
+8/2023:
+    obstale_detection built for pcl 1.8 and ros melodic, for ubuntu 20, use
+    docker image jwang3vsu/kittitool
+    see readme_docker_kittitool.txt
 cd ~/Documents/dataset/ldls_docker_bag
 cd ~/Documents/dataset/arl_aws
 

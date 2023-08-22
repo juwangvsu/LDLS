@@ -1,0 +1,62 @@
+FROM ryuichiueda/ubuntu18.04-ros-image:latest
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
+
+RUN \
+    # Update nvidia GPG key
+    apt-key del 7fa2af80 && \
+    apt-key del "C1CF 6E31 E6BA DE88 68B1  72B4 F42E D6FB AB17 C654" && \
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
+    apt-get update && apt-get install -y --no-install-recommends wget && \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb && \
+    dpkg -i cuda-keyring_1.0-1_all.deb
+
+# preesed tzdata, update package index, upgrade packages and install needed software
+RUN truncate -s0 /tmp/preseed.cfg; \
+    echo "tzdata tzdata/Areas select Europe" >> /tmp/preseed.cfg; \
+    echo "tzdata tzdata/Zones/Europe select Berlin" >> /tmp/preseed.cfg; \
+    debconf-set-selections /tmp/preseed.cfg && \
+    rm -f /etc/timezone /etc/localtime && \
+    apt-get update && \
+    apt-get install -y tzdata sudo nano git
+
+
+# Install mambaforge
+ENV CONDA_DIR=/opt/conda
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH=${CONDA_DIR}/bin:${PATH}
+
+RUN apt-get update > /dev/null && \
+    apt-get install --no-install-recommends --yes \
+        bzip2 ca-certificates \
+        libgl1 libglib2.0-0 \
+        vim \
+        net-tools \
+        ffmpeg \
+        > /dev/null
+
+WORKDIR /
+#RUN git clone --depth 1 https://github.com/robot-learning-freiburg/LCDNet.git
+#RUN mkdir /pretreined_models
+#COPY LCDNet-kitti360.tar /pretreined_models/LCDNet-kitti360.tar
+
+COPY kittitool.tar /kittitool.tar
+RUN tar xvf /kittitool.tar
+WORKDIR /catkin_ws/src
+RUN ln -sn /Tools_RosBag2KITTI/catkin_ws/src/obstacle_detection/
+WORKDIR /catkin_ws
+
+RUN   apt-get install --no-install-recommends --yes \
+        firefox \
+		    iputils-ping \
+		    xterm \
+      ros-melodic-pcl-ros ros-melodic-pcl-conversions ros-melodic-image-transport ros-melodic-cv-bridge \
+    ros-melodic-image-transport-plugins \
+        > /dev/null
+# cleanup of files from setup
+#RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN source /opt/ros/melodic/setup.bash && catkin_make
+WORKDIR /Tools_RosBag2KITTI/pcd2bin/build
+RUN cp pcd2bin /usr/bin
