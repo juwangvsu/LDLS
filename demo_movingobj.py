@@ -51,7 +51,10 @@ parser.add_argument('--datapath', required=False,
                         default='kitti_demo',
                         metavar="/path/to/logs/")
 parser.add_argument('--id', required=False,
-                        default='kitti_demo',
+                        default='000421',
+                        metavar="/path/to/logs/")
+parser.add_argument('--id2', required=False,
+                        default='000422',
                         metavar="/path/to/logs/")
 parser.add_argument('--frames', required=False,
                         default=2,
@@ -65,16 +68,18 @@ parser.add_argument('--true_gt', action='store_false')
 args = parser.parse_args()
 fnprefix = args.datapath
 fnprefix2 = args.id
+fnprefix3 = args.id2
 gen_gt = args.gen_gt
 true_gt = args.true_gt
 framenum = args.frames
 incr = args.incr
 arglen=len(sys.argv)
 print(sys.argv)
-
+lidar_path=[]
 calib_path = Path("data/") / fnprefix / "calib" / (fnprefix2+".txt")
 image_path = Path("data/") / fnprefix / "image_2" / (fnprefix2+".png")
-lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin")
+lidar_path.append(Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin"))
+lidar_path.append( Path("data/") / fnprefix / "velodyne" / (fnprefix3+".bin"))
 gt_seg_path = Path("data/") / fnprefix / "gt_segmentation" / (fnprefix2+".txt")
 
 # Load calibration data
@@ -89,7 +94,7 @@ for i in range(framenum):
     plt.show()
     print(type(image_l[i]), image_l[i].shape)
 # Load lidar
-    lidar = load_kitti_lidar_data(lidar_path, load_reflectance=False)
+    lidar = load_kitti_lidar_data(lidar_path[i], load_reflectance=False)
     lidar_l.append(lidar)
     print("Loaded LiDAR point cloud with %d points" % lidar.shape[0])
 
