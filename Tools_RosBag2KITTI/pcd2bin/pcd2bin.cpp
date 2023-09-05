@@ -11,7 +11,7 @@
 *
 *   Code by FSQ 2018.11.5
 **************************************************************************************/
-
+#include "cxxopts.hpp"
 #include <iostream>           
 #include <pcl/io/pcd_io.h>      
 #include <pcl/point_types.h>     
@@ -84,9 +84,41 @@ void sort_filelists(std::vector<std::string>& filists,std::string type)
 
 int main(int argc, char **argv)
 {
+    std::cout<<"convert pcd to bin file, pcd2bin --indir pcd --outdir bin\n";
     //Set the file path
     std::string bin_path = "bin/";
     std::string pcd_path = "pcd/";
+    std::unique_ptr<cxxopts::Options> allocated(new cxxopts::Options(argv[0], " - example command line options"));
+    auto& options = *allocated;
+    options
+      .positional_help("[optional args]")
+      .show_positional_help();
+
+    bool apple = false;
+
+    options
+      .set_width(70)
+      .set_tab_expansion()
+      .allow_unrecognised_options()
+      .add_options()
+("i,indir", "Indir, default pcd", cxxopts::value<std::string>())
+("o,outdir", "outdir, default bin", cxxopts::value<std::string>())
+("int", "An integer", cxxopts::value<int>(), "N");
+    std::cout << options.help({"", "Group"}) << std::endl;
+auto result = options.parse(argc, argv);
+    if (result.count("indir"))
+    {
+      std::cout << "Indir = " << result["indir"].as<std::string>()
+        << std::endl;
+      pcd_path=result["indir"].as<std::string>()+"/";
+    }
+    if (result.count("outdir"))
+    {
+      std::cout << "outdir = " << result["outdir"].as<std::string>()
+        << std::endl;
+      bin_path=result["outdir"].as<std::string>()+"/";
+    }
+
     //Read file lists of specific type
     read_filelists( pcd_path, file_lists, "pcd" );
     sort_filelists( file_lists, "pcd" );

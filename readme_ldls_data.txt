@@ -1,6 +1,9 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+------9/3/23 pcd2bin -----------------
+argparse --indir --outdir
+
 -------3/20/23 demo_param -----------------
 sweeping x/y/z 
  usage angle dithering: python demo_param_sen.py --datapath apgsample --id 001145 --xr --d_range 1 --steps 10 --gen_gt

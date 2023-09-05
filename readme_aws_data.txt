@@ -63,6 +63,7 @@ icp dump: 4/31/23
 -----------------2/1/23 rerun filtered bag5 full stack ---------------
 (1) filter bag file:
 	rosbag_filter.sh
+		bag5_filter.bag
                 the bag filtered to only contain sobek data
 (2) @docker:
 	rosrun phoenix_bag_launch generate_bag_args /media/student/data10/arl_aws/bag5_filter.bag -o mylaunch_bag5.launch

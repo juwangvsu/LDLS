@@ -1,7 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/pcd2bin.dir/pcd2bin.cpp.o"
-  "pcd2bin.pdb"
+  "CMakeFiles/pcd2bin.dir/pcd2bin.cpp.o.d"
   "pcd2bin"
+  "pcd2bin.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
