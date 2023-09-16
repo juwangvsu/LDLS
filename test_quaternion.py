@@ -1,5 +1,6 @@
 import numpy as np
 import quaternion
+import sys
 def test_quat():
     m1 = tf_mat[:3,:3]
     q1=quaternion.from_rotation_matrix(m1)
@@ -10,6 +11,25 @@ def test_quat():
     m2=quaternion.as_rotation_matrix(q2)
     projection.transformation_matrix[:3,:3] = m2
 
+import cv2
+from scipy.spatial.transform import Rotation as R
+
+def test_opencv_scipy():
+    print("test opencv scipy rotvec...")
+    rotVec_1 = np.array([[1.57, -1.57  , 1.57  ]], dtype=float)
+    rotmat_1,_ =cv2.Rodrigues(rotVec_1)
+    rotvec_1,_ = cv2.Rodrigues(rotmat_1)
+    quat_sci_1 = R.from_rotvec(rotVec_1)
+    print('rotvec ', rotVec_1, '\nrotmat', quat_sci_1.as_matrix())
+
+    rotVec_2 = np.array([[1.2, -1.2  , 1.2  ]], dtype=float)
+    rotmat_2,_ =cv2.Rodrigues(rotVec_2)
+    rotvec_2,_  = cv2.Rodrigues(rotmat_2)
+    quat_sci_2 = R.from_rotvec(rotVec_2)
+    print('rotvec ', rotVec_2, '\nrotmat', quat_sci_2.as_matrix())
+
+test_opencv_scipy()
+sys.exit()
 v1=np.array([np.pi/4, 0., 0.]) #45 degree
 q1=quaternion.from_rotation_vector(v1)
 m1=quaternion.as_rotation_matrix(q1)

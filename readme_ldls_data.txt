@@ -1,6 +1,35 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+------9/16/23 Caliberation paper draft --------------------------
+
+https://www.overleaf.com/project/62f29edf00b10b04c3a423fc
+figures/images:
+	C:\Users\Ju Wang\Documents\army 2021\venkat\paperdraft
+
+arl-caliberation page: 
+	use chess board, background subtraction, 
+	https://gitlab.sitcore.net/aimm/phoenix-r1/-/wikis/Tutorials/Multi-Sensor-Calibration
+	https://gitlab.sitcore.net/aimm/phoenix-r1/-/blob/master/src/sensors/calibration/msg-cal/msg_cal/tutorial/README.md
+
+------9/16/23 icpnp caliberation code works --------------------------
+ldls:
+	/media/student/data5/cvbridge_build_ws/src/point_cloud_icp
+	python icpnp.py --root_folder /media/student/data10/arl_aws/output/ --data_folder velodyne_no_ground --fn 000075_radius_inview_notree.pcd --calib_path calib_test.txt
+
+-------9/10/23 quaternion euler angles rotmat rotvec opencv scipy --------
+
+opencv scipy ros etc all right-hand system
+rotVec = np.array([[1.57, 0.  , 0.  ]], dtype=float32)
+rotmat,_=cv2.Rodrigues(rotVec)
+rotvec_2, = cv2.Rodrigues(rotmat)
+from scipy.spatial.transform import Rotation as R
+quat_sci = R.from_rotvec(rotVec)
+quat_sci.as_matrix()
+array([[[ 1.00000000e+00,  0.00000000e+00,  0.00000000e+00],
+        [ 0.00000000e+00,  7.96274259e-04, -9.99999683e-01],
+        [ 0.00000000e+00,  9.99999683e-01,  7.96274259e-04]]])
+
 ------9/3/23 pcd2bin -----------------
 argparse --indir --outdir
 
@@ -131,6 +160,7 @@ images:
 
 
 KITTI calib file prep: LDLS/data/kitti_demo/calib/000571.txt
+	P2 is loaded to matrix P
 P0:
 array([[718.3351,   0.    , 600.3891,   0.    ],
        [  0.    , 718.3351, 181.5122,   0.    ],
