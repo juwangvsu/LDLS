@@ -30,6 +30,9 @@ array([[[ 1.00000000e+00,  0.00000000e+00,  0.00000000e+00],
         [ 0.00000000e+00,  7.96274259e-04, -9.99999683e-01],
         [ 0.00000000e+00,  9.99999683e-01,  7.96274259e-04]]])
 
+A rotation vector is a 3 dimensional vector which is co-directional to the axis of 
+rotation and whose norm gives the angle of rotation [1].
+
 ------9/3/23 pcd2bin -----------------
 argparse --indir --outdir
 
