@@ -100,6 +100,14 @@ more note:
 	ea_kitti_rostf = tf.transformations.euler_from_quaternion(q_kitti_rostf,'rzyz')
 	ros tf rpy: roll about an X-axis) / (subsequent pitch about the Y-axis) / (subsequent yaw about the Z-axis),
 
+	quat in  scipy.spatial.transform is (x,y,z,w)
+
+ros2 tf:
+	from tf2_ros.buffer import Buffer
+	from tf2_ros import TransformException
+	from tf2_ros.transform_listener import TransformListener
+	from tf_transformations import euler_from_quaternion
+
 --------2/28/23 ldls hptitan retest -------------------
 
 retest ok, with python-pcl (local build)
@@ -246,6 +254,19 @@ arldell, lenova1
 cd ~/catkin_ws/src;
 ln -sn /media/student/data6/venk/LDLS/Tools_RosBag2KITTI/catkin_ws/src/obstale_detection
 catkin_make
+
+----------------- Documents/datasets----------
+  arl_aws
+    bag5.bag                  onedrive:aws`
+      john rogers, husky+jackal
+    2021-07-09-10-33-16.bag   onedrive:arldata
+      venkat
+  loam/
+    2011_09_30_0018.bag       onedrive:/kitti
+  msbuild
+    test2_2022-08-01-xxx.bag  onedrive:/baal
+  kitti
+    kitti sequence (80g)      baalnouv1
 
 -----------------11/2022 run bag2pcd apgdata----------
 8/2023:

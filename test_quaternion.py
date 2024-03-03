@@ -98,3 +98,8 @@ print('m_kitti vs m_abg=m_alpha*m_beta*m_gamma :\n',m_kitti,'\n', m_abg)
 
 
 #test_quat()
+from scipy.spatial.transform import Rotation as R
+rotmat = tr_husky_np[:3,:3]
+rot = R.from_matrix(rotmat)
+rot.as_rotvec()
+
