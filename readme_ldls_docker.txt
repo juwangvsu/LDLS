@@ -26,6 +26,26 @@ tasks:
 			the 1st frame
 		
 
+--------------5/24/24 retest, test_proj cuda12---
+hpzbook: (openmmlab)
+
+code/pkg update:
+	mrcnn hack due to tensorflow 2.x, original code use tf1.x
+	keras.engine: /home/robot/.pyenv/versions/miniconda3-latest/envs/openmmlab/lib/python3.8/site-packages/mrcnn/model.py
+		comment off keras.engine as KE
+		replace KE by KL
+	/home/student/Documents/venk/LDLS/mask_rcnn/mask_rcnn.py
+		tensorflow 2.x update
+	apt install cuda-toolkit-12-4
+	pip install imgaug cupy-cuda12x  
+test:
+	python test_proj.py kitti_demo 000571
+		this show lidar points in browser
+
+TBD:
+	check projection of lidar points...
+
+	
 --------------6/1/23 retest, demo.py regression test fix---
 follow usage
 --------------- 2/28/23 venkat/brain new ldls docker image ----------------------
@@ -325,6 +345,12 @@ $PYTHONPATH: cv2 error
 	fix:
 		export PYTHONPATH=
 	
+cupy:(hpzbook)
+	pip install cupy-cuda12x
+	wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+	sudo dpkg -i cuda-keyring_1.1-1_all.deb
+	sudo apt-get update
+	sudo apt-get -y install cuda-toolkit-12-4
 
 --------additional pkgs installed --------------------
 open3d 0.15.2

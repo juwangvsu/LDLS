@@ -11,8 +11,8 @@ from mask_rcnn.mask_rcnn import MaskRCNNDetector
 
 import time
 import sys
-import mrcnn
-usepcl = True #change to false if pcl error and use the plotly display
+#import mrcnn
+usepcl = False #change to false if pcl error and use the plotly display
 
 print('usage: python test_proj.py apgdata 001145')
 fnprefix= "_out"

@@ -11,17 +11,21 @@ import os
 import sys
 
 import keras.backend
-import tensorflow
+import tensorflow 
+import tensorflow as tf
 
 from lidar_segmentation.detections import MaskRCNNDetections
 
 # Leave part of the GPU memory unallocated, so can be used for label diffusion
-gpu_opt = tensorflow.GPUOptions(per_process_gpu_memory_fraction=0.7)
-config = tensorflow.ConfigProto(gpu_options=gpu_opt)
+#gpu_opt = tensorflow.GPUOptions(per_process_gpu_memory_fraction=0.7)
+gpu_opt = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.7)
+#config = tensorflow.ConfigProto(gpu_options=gpu_opt)
+config = tf.compat.v1.ConfigProto(gpu_options=gpu_opt)
 
 # config = tensorflow.ConfigProto()
 config.inter_op_parallelism_threads = 1
-keras.backend.set_session(tensorflow.Session(config=config))
+#keras.backend.set_session(tensorflow.Session(config=config))
+tf.compat.v1.keras.backend.set_session(tf.compat.v1.Session(config=config))
 
 # Root directory of the project
 ROOT_DIR = os.path.abspath(".")

@@ -18,6 +18,10 @@ buggy in linux:
 	fix: rm libz.so.1 come with pptk, in ldls env, rm /media/student/data5/.pyenv/versions/miniconda3-latest/envs/ldls/lib/python3.7/site-packages/pptk/libs/libz.so.1
 	this will make pptk to use system libz.so.1
 
+--------------5/24/24 bin to bin tools  ----------------
+python kitti_test.py --mode dir --bindir data/kitti_demo/velodyne
+	this use o3d
+
 --------------3/6/23 pcd bin tools  ----------------
 (1) to view bin file:
 	LDLS/
