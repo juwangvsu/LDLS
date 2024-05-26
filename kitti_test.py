@@ -39,16 +39,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='convert kitti bin to pcd')
     parser.add_argument('--bindir', required=False,
-                        default='/media/student/kitti/kitti_object/train/velodyne',
+                        default='/media/student/kitti/kitti_object/training/velodyne',
                         metavar="/path/to/logs/")
     parser.add_argument('--pcddir', required=False,
-                        default='/media/student/kitti/kitti_object/train/pcd',
+                        default='/media/student/kitti/kitti_object/training/pcd',
                         metavar="/path/to/logs/")
     parser.add_argument('--mode', required=False,
                         default='single', #single or dir
                         metavar="/path/to/logs/")
     args = parser.parse_args()
-
+    print('usage python $@ --mode single|dir')
     if args.mode =='single':
         convert_test()
     elif args.mode=='dir':
