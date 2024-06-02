@@ -4,19 +4,22 @@
 # usage: python baglistener_pt2pcd_ros2.py
 # miniconda
 
-import rospy
+import rclpy
+from rclpy.node import Node
+
 from std_msgs.msg import String
-import rosbag
 from std_msgs.msg import Int32, String
 from sensor_msgs.msg import Imu, PointCloud2
 from nav_msgs.msg import Odometry
 import numpy
 import numpy as np
-import pcl
 import random
 import csv
 import copy
 from threading import Thread, Lock
+import open3d as o3d
+#print("Load a ply point cloud, print it, and render it")
+#pcd = o3d.io.read_point_cloud("001145.pcd")
 
 mutex = Lock()
 # turtlebot point msg ex:
@@ -54,7 +57,7 @@ def filter_nan(cloud):
 # the published data still have the same number of points, with some points 
 # modified (such as floor become 0s). but the pcd have much
 # smaller data points.
-def pt2_2_pcd(pt2msg):
+def pt2_2_pcd(pt2msg, pcdfn='pcdfile2.pcd'):
     global pt2buf, pt2buf_bytearray,bzero32
     pt2buf_bytearray = bytearray(pt2msg.data)
     pointsarray = numpy.ndarray((pt2msg.height*pt2msg.width,3), dtype='float32')
@@ -80,21 +83,30 @@ def pt2_2_pcd(pt2msg):
     pt2buf = str(pt2buf_bytearray)
     print(pointsarray) 
     ptarray_valid=filter_nan(pointsarray)
-    ptarray_y=filter_y(ptarray_valid)
-    pc2 = pcl._pcl.PointCloud()
-    pc2.from_array(ptarray_y)
-    pcl.save(pc2,'tttt.pcd')
+    #ptarray_y=filter_y(ptarray_valid)
+    ptarray_y=pointsarray
+
+    numpoints =len(ptarray_y)
+    pcolor_np3=np.ones(numpoints*3)
+    pcolor_np3 =pcolor_np3.reshape(numpoints,3)
+
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(ptarray_y[:,0:3])
+    pcd.colors = o3d.utility.Vector3dVector(pcolor_np3)
+    print(pcd.points, pcd.colors)
+    o3d.io.write_point_cloud(pcdfn, pcd)
+
+    #pcl.save(pc2,'tttt.pcd') pcl sucks
     return ptarray_y
 
 def callback_pt2(pt2msg):
-   global pt2pub, msgt1_prev, skipcnt, pt2frames, letters, pt2random
-   print("pt2, skipcnt:", skipcnt, pt2frames, 'w/h/rs/ps/: ', pt2msg.width, pt2msg.height,pt2msg.row_step, pt2msg.point_step)
-   msgt1 =pt2msg.header.stamp.secs + 1.0*pt2msg.header.stamp.nsecs/1000000000
-   #print('t1, t1_prev: ', msgt1, msgt1_prev)
+   global pt2pub, msgt1_prev, pt2frames, letters, pt2random
+   msgt1 =pt2msg.header.stamp.sec + 1.0*pt2msg.header.stamp.nanosec/1000000000
+   print('t1, t1_prev len(data): ', msgt1, msgt1_prev, len(pt2msg.data))
    if msgt1 < msgt1_prev:
        #print('time glitch')
        return
-   if pt2frames==0: #save one here
+   if len(pt2msg.data) > 32: #save one here
        print("pub this pt2 frame time",msgt1," len(pt2msg.data)/32:", len(pt2msg.data)/32)
        msgt1_prev=msgt1
        #print(pt2msg)
@@ -102,16 +114,17 @@ def callback_pt2(pt2msg):
        #print(struct.unpack("<B", pt2msg.data[1]))
        b4=pt2msg.data[0]+pt2msg.data[1]+pt2msg.data[2]+pt2msg.data[3]
        #print(struct.unpack('<f', b4))
-       pt_filtered = pt2_2_pcd(pt2msg)
+       pcdfn ='pcdfile_'+str(pt2frames)+'.pcd' 
+       pt_filtered = pt2_2_pcd(pt2msg, pcdfn=pcdfn)
        #pt2msg.data=pt2msg.data[0:10240] #carto node crash
        #pt2msg.data=pt2msg.data[0:2457600/2] #no display, but carto node not crash
        #letters = ''.join(struct.pack("<B",i) for i in range(255))
        #pt2random = ''.join(random.choice(letters) for i in range(2457600)) 
        #pt2msg.data=pt2random
-       pt2msg.data=pt2buf
+       #pt2msg.data=pt2buf
 
    #    print("pub this pt2 frame len(pt2msg.data)/32:", len(pt2msg.data)/32)
-       pt2pub.publish(pt2msg)
+       #pt2pub.publish(pt2msg)
    pt2frames = pt2frames +1
 
 def callback(imumsg):
@@ -156,8 +169,13 @@ def callback3(odommsg):
     print('prevodom initodoms : ', prevodom.pose.pose.position.x, initodom.pose.pose.position.x)
     mutex.release()
 
+class ListenerNode(Node):
+    def __init__(self):
+        super().__init__("baglistener")
+
 def listener():
-    global imupub , pt2pub, msgt1_prev, msgt2_prev, skipcnt, pt2frames,letters
+
+    global imupub , pt2pub, msgt1_prev, msgt2_prev, pt2frames,letters
     global pt2random
     global pt2buf, pt2buf_bytearray, bzero32
     global odomsub, outfile, prevmsg_t, writer, prevodom, initodom
@@ -174,17 +192,14 @@ def listener():
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
-    rospy.init_node('bagptflter', anonymous=True)
-    skipcnt = int(rospy.get_param("skipcnt", '10'))
-    print(skipcnt)
-    #imupub = rospy.Publisher('/mavros/imu/data', Imu, queue_size=10)
-    #rospy.Subscriber("/tmpimu", Imu, callback)
-    pt2pub = rospy.Publisher('/camera/depth/points2',PointCloud2, queue_size=10)
-    rospy.Subscriber("/map", PointCloud2, callback_pt2)
-    rospy.Subscriber("/odom_gt", Odometry, callback3)
+    rclpy.init()
+    node = ListenerNode()
+    #pt2pub = node.create_publisher(PointCloud2, '/camera/depth/points2', queue_size=10)
+    pt2sub = node.create_subscription(PointCloud2, "/point_cloud", callback_pt2,10)
+    #rospy.Subscriber("/odom_gt", Odometry, callback3)
 
     prevmsg_t=0
-    filename = '/home/student/Documents/cartographer/test/scan_hrt.csv'
+    filename = 'scan_hrt.csv'
     outfile= open(filename, 'w')
 
     fieldnames = ['t', 'type', 'x', 'y', 'z','qx', 'qy', 'qz', 'qw']
@@ -193,7 +208,12 @@ def listener():
     prevodom=Odometry()
     initodom=None # this is to be replaced by the first valid odom
     # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+    try:
+        rclpy.spin(node)
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
+
 
 if __name__ == '__main__':
     listener()
