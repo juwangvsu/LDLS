@@ -1,3 +1,9 @@
+--------6/2/24 ros2 point cloud to pcd file ------------
+python baglistener_pt2pcd_ros2.py
+	pcdfile_#.pcd
+
+isaac sim generate 120 deg of data in each pt2 message.
+
 -------8/26/23 docker image ros kitti tool w/ melodic----------------
 @linux:
 
