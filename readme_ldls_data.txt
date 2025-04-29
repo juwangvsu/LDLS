@@ -268,6 +268,15 @@ catkin_make
   kitti
     kitti sequence (80g)      baalnouv1
 
+-----------------4/28/2025 run bag2pcd jackal data----------
+@ws3, 
+mkdir -p ~/Documents/ldls_docker_bag/output/pcd
+mkdir -p ~/Documents/ldls_docker_bag/output/png
+cp .bag to ~/Documents/ldls_docker_bag/
+docker run -t -d --restart always --network host -v /home/sysinit/Documents/ldls_docker_bag:/ldls_docker_bag --name ldls --entrypoint /bin/bash jwang3vsu/kittitool
+docker exec -it ldls bash
+	do 11/2022 test
+ 
 -----------------11/2022 run bag2pcd apgdata----------
 8/2023:
     obstale_detection built for pcl 1.8 and ros melodic, for ubuntu 20, use
@@ -278,10 +287,16 @@ cd ~/Documents/dataset/arl_aws
 
 mkdir output/pcd
 mkdir output/png
+test:
  rosbag play bag5.bag 
  rosbag play 2021-07-09-10-33-16.bag
+ rosbag play jackal_test3_2025-04-28-22-02-42.bag
+ rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/d400/color/image_raw/compressed /pandar_points:=/baal/point_cloud_pipeline/cloud
+	error: no intensity field.
  rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/husky6/forward/color/image/compressed /pandar_points:=/husky6/point_cloud_pipeline/cloud
  rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/husky6/forward/color/image_repub/compressed /pandar_points:=/husky6/point_cloud_pipeline/cloud
+ rosrun obstacle_detection map_generate /axis/image_rect_color/compressed:=/d400/color/image_raw/compressed /pandar_points:=/baal/point_cloud_pipeline/cloud
+	
 	12/14/22: this 2021 dataset, example data: apgdata/, 
 	topic: /husky6/point_cloud_pipeline/cloud, frameid: husky6/base, examing the data show this frame is align with kitti base frame, which is also
 		align with kitti lidar frame.
