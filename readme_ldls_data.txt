@@ -1,6 +1,17 @@
 this file:
 /media/student/data_4tb2/ldls_docker_bag
 
+-----------------4/29/2025 run bag2pcd jackal data----------
+hpzbook, (openmmlab)
+data/jackal_test
+	cp data/kitti_demo/calib/000571.txt data/jackal_test/calib/000071.txt
+	ln -sn bin velodyne
+	ln -sn png image_2	
+test:
+        python test_proj.py jackal_test 000071 [rgb]
+                this show lidar points in browser
+
+see: 5/24/24 readme_ldls_docker.txt
 ------9/16/23 Caliberation paper draft --------------------------
 
 https://www.overleaf.com/project/62f29edf00b10b04c3a423fc

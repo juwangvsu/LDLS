@@ -14,7 +14,7 @@ import sys
 #import mrcnn
 usepcl = False #change to false if pcl error and use the plotly display
 
-print('usage: python test_proj.py apgdata 001145')
+print('usage: python test_proj.py apgdata 001145 [rgb]')
 fnprefix= "_out"
 fnprefix2= "00000262"
 arglen=len(sys.argv)
@@ -23,11 +23,17 @@ if arglen>1:
     fnprefix = sys.argv[1]
 if arglen>2:
     fnprefix2 = sys.argv[2]
+if arglen>3:
+    rgb = sys.argv[3]
+else:
+    rgb = "none"
 
 calib_path = Path("data/") / fnprefix / "calib" / (fnprefix2+".txt")
 image_path = Path("data/") / fnprefix / "image_2" / (fnprefix2+".png")
-lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin")
-
+if rgb=="none":
+    lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+".bin")
+else:
+    lidar_path = Path("data/") / fnprefix / "velodyne" / (fnprefix2+"_rgb.bin")
 # Load calibration data
 projection = load_kitti_object_calib(calib_path)
 
